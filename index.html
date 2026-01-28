@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0f14" />
+  <meta name="description" content="Detail’N Co. — Mobile auto detailing. Select, Signature, and Showroom packages with professional add-ons. Ottawa area." />
+  <title>Detail’N Co. — Mobile Auto Detailing</title>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Detail’N Co. — Mobile Auto Detailing" />
+  <meta property="og:description" content="Professional mobile detailing built for enthusiasts and daily drivers. Select • Signature • Showroom." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://detailnco.com" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Clean, premium font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <!-- Top glow + grain -->
+  <div class="fx fx-glow" aria-hidden="true"></div>
+  <div class="fx fx-grain" aria-hidden="true"></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="#top" aria-label="Detail’N Co. Home">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__text">DETAIL’N CO.</span>
+      </a>
+
+      <nav class="nav__links" aria-label="Primary">
+        <a href="#packages">Packages</a>
+        <a href="#addons">Add-Ons</a>
+        <a href="#service-area">Service Area</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="nav__mobile" id="navMobile" aria-hidden="true">
+      <a href="#packages">Packages</a>
+      <a href="#addons">Add-Ons</a>
+      <a href="#service-area">Service Area</a>
+      <a href="#contact">Contact</a>
+      <a class="btn btn--ghost" href="https://instagram.com/detail.n.co" target="_blank" rel="noreferrer">Instagram</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <div class="pill">
+            <span class="dot dot--blue"></span>
+            <span>Mobile Auto Detailing • Ottawa Area</span>
+          </div>
+
+          <h1 class="hero__title">
+            Professional detailing,
+            <span class="accent">performance mindset</span>.
+          </h1>
+
+          <p class="hero__subtitle">
+            We bring a clean, OEM+ finish to your driveway or workplace. Built for daily drivers, enthusiasts, and anyone who wants it done right.
+          </p>
+
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#contact">Request a Booking</a>
+            <a class="btn btn--ghost" href="#packages">View Packages</a>
+          </div>
+
+          <div class="hero__meta">
+            <div class="metaCard">
+              <div class="metaCard__icon metaCard__icon--red" aria-hidden="true"></div>
+              <div>
+                <div class="metaCard__label">Minimum Booking</div>
+                <div class="metaCard__value">Matches package price</div>
+              </div>
+            </div>
+
+            <div class="metaCard">
+              <div class="metaCard__icon metaCard__icon--blue" aria-hidden="true"></div>
+              <div>
+                <div class="metaCard__label">Add-Ons</div>
+                <div class="metaCard__value">Available on any package</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__panel">
+          <div class="panel">
+            <div class="panel__top">
+              <div class="panel__badge">
+                <span class="dot dot--red"></span>
+                <span>SELECT • SIGNATURE • SHOWROOM</span>
+              </div>
+              <div class="panel__line"></div>
+            </div>
+
+            <div class="panel__logo">
+              <!-- If you have a logo, drop it in assets/logo.png and uncomment the img -->
+              <!-- <img src="assets/logo.png" alt="Detail’N Co. logo" /> -->
+              <div class="wordmark">
+                <div class="wordmark__main">DETAIL’N CO.</div>
+                <div class="wordmark__sub">Mobile Auto Detailing</div>
+              </div>
+            </div>
+
+            <div class="panel__features">
+              <div class="feature">
+                <div class="feature__icon" aria-hidden="true"></div>
+                <div class="feature__text">On-site service • Professional finish</div>
+              </div>
+              <div class="feature">
+                <div class="feature__icon feature__icon--blue" aria-hidden="true"></div>
+                <div class="feature__text">Protect your time with clear packages</div>
+              </div>
+              <div class="feature">
+                <div class="feature__icon feature__icon--red" aria-hidden="true"></div>
+                <div class="feature__text">Add-ons tailored to your vehicle</div>
+              </div>
+            </div>
+
+            <div class="panel__bottom">
+              <div class="tiny">Follow for launch updates</div>
+              <a class="btn btn--primary btn--small" href="https://instagram.com/detail.n.co" target="_blank" rel="noreferrer">
+                @detail.n.co
+              </a>
+            </div>
+
+            <div class="panel__outline" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PACKAGES -->
+    <section class="section" id="packages">
+      <div class="container">
+        <div class="sectionHead">
+          <div class="kicker">Packages</div>
+          <h2>Select your level.</h2>
+          <p>Three tiers designed for clarity and consistency. Vehicle size adjustments apply to SUVs, trucks, and larger vehicles.</p>
+        </div>
+
+        <div class="cards">
+          <article class="card card--select">
+            <div class="card__top">
+              <div class="card__tag">
+                <span class="dot dot--blue"></span>
+                <span>SELECT</span>
+              </div>
+              <div class="card__title">Refresh &amp; Shine</div>
+              <div class="card__desc">A professional maintenance detail for regular upkeep.</div>
+            </div>
+
+            <ul class="list">
+              <li>Exterior hand wash</li>
+              <li>Interior vacuum</li>
+              <li>Interior surface wipe-down</li>
+              <li>Wheels &amp; tires cleaned</li>
+            </ul>
+
+            <div class="card__foot">
+              <div class="fine">Approx. 45–60 minutes (small vehicles)</div>
+              <a class="btn btn--ghost btn--full" href="#contact">Book Select</a>
+            </div>
+          </article>
+
+          <article class="card card--signature">
+            <div class="card__top">
+              <div class="card__tag">
+                <span class="dot dot--red"></span>
+                <span>SIGNATURE</span>
+              </div>
+              <div class="card__title">Enhanced Detail</div>
+              <div class="card__desc">Our most popular option for a deeper, refined clean.</div>
+            </div>
+
+            <ul class="list">
+              <li>Everything in Select</li>
+              <li>Light upholstery spot cleaning</li>
+              <li>Tire shine</li>
+              <li>Spray wax for added gloss &amp; protection</li>
+              <li class="muted">Cabin air filter cleaning (complimentary)</li>
+              <li class="muted">Engine air filter cleaning (complimentary)</li>
+            </ul>
+
+            <div class="card__foot">
+              <div class="fine">Approx. 90–150 minutes (small vehicles)</div>
+              <a class="btn btn--primary btn--full" href="#contact">Book Signature</a>
+            </div>
+          </article>
+
+          <article class="card card--showroom">
+            <div class="card__top">
+              <div class="card__tag">
+                <span class="dot dot--blue"></span>
+                <span>SHOWROOM</span>
+              </div>
+              <div class="card__title">Ultimate Revitalization</div>
+              <div class="card__desc">For vehicles that need the full reset—inside and out.</div>
+            </div>
+
+            <ul class="list">
+              <li>Everything in Signature</li>
+              <li>Full seat steam cleaning</li>
+              <li>Leather treatment &amp; conditioning</li>
+              <li>Hand-applied exterior wax</li>
+              <li class="muted">Headlight restoration (if applicable)</li>
+              <li class="muted">Windshield waxing &amp; window cleaning (included)</li>
+              <li class="muted">Tire air top-up (included)</li>
+            </ul>
+
+            <div class="card__foot">
+              <div class="fine">Approx. 4 hours (small vehicles)</div>
+              <a class="btn btn--ghost btn--full" href="#contact">Book Showroom</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="notice">
+          <div class="notice__bar"></div>
+          <div class="notice__content">
+            <strong>Minimum booking equals the selected package.</strong>
+            Add-ons can be added to any package. Final scope is confirmed before work begins.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADD-ONS -->
+    <section class="section" id="addons">
+      <div class="container">
+        <div class="sectionHead">
+          <div class="kicker">Add-Ons</div>
+          <h2>Dial it in.</h2>
+          <p>Customize any package with targeted add-ons. All add-ons are available with any package.</p>
+        </div>
+
+        <div class="grid2">
+          <div class="addonBox">
+            <h3>Interior &amp; Comfort</h3>
+            <ul class="list list--tight">
+              <li>Interior re-scent (1-month freshness)</li>
+              <li>Smoke odor removal</li>
+              <li>Seat steam cleaning <span class="muted">(included with Showroom)</span></li>
+              <li>Leather treatment <span class="muted">(included with Showroom)</span></li>
+              <li>Cabin air filter cleaning <span class="muted">(complimentary with Signature &amp; Showroom)</span></li>
+              <li>Engine air filter cleaning <span class="muted">(complimentary with Signature &amp; Showroom)</span></li>
+            </ul>
+          </div>
+
+          <div class="addonBox">
+            <h3>Exterior &amp; Visual</h3>
+            <ul class="list list--tight">
+              <li>Windshield waxing &amp; window cleaning <span class="muted">(included with Showroom)</span></li>
+              <li>Bug &amp; tar removal</li>
+              <li>Chrome shining / polish</li>
+              <li>Rim paint touch-up <span class="muted">(gloss black only)</span></li>
+              <li>Minor scuff removal <span class="muted">(starting at)</span></li>
+            </ul>
+          </div>
+
+          <div class="addonBox">
+            <h3>Mechanical &amp; Utility</h3>
+            <ul class="list list--tight">
+              <li>Tire air top-up <span class="muted">(included with Showroom)</span></li>
+              <li>Nail removal &amp; tire repair <span class="muted">(starting at)</span></li>
+              <li>Engine bay cleaning</li>
+            </ul>
+          </div>
+
+          <div class="addonBox addonBox--highlight">
+            <h3>Pro Notes</h3>
+            <p class="muted">
+              Some add-ons are condition-based (e.g., rim touch-ups, scuff removal, tire repair).
+              We confirm scope and feasibility on-site before work begins.
+            </p>
+            <p class="muted">
+              Want updates? Follow <a href="https://instagram.com/detail.n.co" target="_blank" rel="noreferrer">@detail.n.co</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICE AREA -->
+    <section class="section" id="service-area">
+      <div class="container">
+        <div class="sectionHead">
+          <div class="kicker">Service Area</div>
+          <h2>We come to you.</h2>
+          <p>Simple travel rules keep pricing fair and predictable.</p>
+        </div>
+
+        <div class="split">
+          <div class="infoCard">
+            <h3>Standard Operating Radius</h3>
+            <p>Up to <strong>30 km</strong> from base location is included.</p>
+          </div>
+
+          <div class="infoCard infoCard--accent">
+            <h3>Extended Range Surcharge</h3>
+            <p>Jobs beyond 30 km incur a <strong>$30 flat surcharge</strong> to cover time, fuel, and vehicle wear.</p>
+          </div>
+
+          <div class="infoCard">
+            <h3>Zero Downtime Approach</h3>
+            <p>We operate with dual kits so one person can keep working while the other replenishes stock if needed.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section section--end" id="contact">
+      <div class="container">
+        <div class="cta">
+          <div class="cta__copy">
+            <div class="kicker">Contact</div>
+            <h2>Request a booking.</h2>
+            <p>
+              Send your vehicle type, location, and the package you’re interested in.
+              We’ll respond with availability and a clear confirmation before we arrive.
+            </p>
+
+            <div class="cta__actions">
+              <a class="btn btn--primary" href="https://instagram.com/detail.n.co" target="_blank" rel="noreferrer">
+                Message on Instagram
+              </a>
+              <button class="btn btn--ghost" id="copyMsgBtn" type="button">
+                Copy booking message
+              </button>
+            </div>
+
+            <div class="fine">
+              Launching soon. Follow for updates: <a href="https://instagram.com/detail.n.co" target="_blank" rel="noreferrer">@detail.n.co</a>
+            </div>
+          </div>
+
+          <div class="cta__form">
+            <div class="formCard">
+              <div class="formCard__title">Quick Booking Message</div>
+              <div class="formCard__hint">Copy and paste into Instagram DM.</div>
+              <textarea id="bookingMessage" rows="9" readonly>
+Hi Detail’N Co., I’d like to book a mobile detail.
+
+Vehicle: (year/make/model)
+Vehicle size: (small / medium / large)
+Preferred package: (Select / Signature / Showroom)
+Add-ons requested: (optional)
+Location: (postal code / area)
+Preferred days/times: (2 options)
+
+Thank you.
+              </textarea>
+              <div class="formCard__row">
+                <button class="btn btn--primary btn--full" id="copyMsgBtn2" type="button">Copy message</button>
+              </div>
+              <div class="formCard__hint muted">
+                Note: Pricing varies by vehicle size and condition. We confirm scope before starting.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <div class="footer__left">
+            <div class="brand brand--footer">
+              <span class="brand__mark" aria-hidden="true"></span>
+              <span class="brand__text">DETAIL’N CO.</span>
+            </div>
+            <div class="fine muted">Mobile Auto Detailing • Ottawa Area</div>
+          </div>
+
+          <div class="footer__right">
+            <a href="#packages">Packages</a>
+            <a href="#addons">Add-Ons</a>
+            <a href="#service-area">Service Area</a>
+            <a href="https://instagram.com/detail.n.co" target="_blank" rel="noreferrer">Instagram</a>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
