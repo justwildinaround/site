@@ -11,6 +11,177 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
+<script>
+(() => {
+  const API = "/api/reviews";
+  const reviewForm = document.getElementById("reviewForm");
+  const reviewBoard = document.getElementById("reviewBoard");
+  const reviewName = document.getElementById("reviewName");
+  const reviewText = document.getElementById("reviewText");
+
+  function toast(msg) {
+    // If your site already has a toast() in app.js, this won't hurt.
+    // Minimal fallback:
+    let t = document.getElementById("toast");
+    if (!t) {
+      t = document.createElement("div");
+      t.id = "toast";
+      t.style.position = "fixed";
+      t.style.left = "50%";
+      t.style.bottom = "18px";
+      t.style.transform = "translateX(-50%)";
+      t.style.padding = "10px 12px";
+      t.style.borderRadius = "12px";
+      t.style.border = "1px solid rgba(255,255,255,.14)";
+      t.style.background = "rgba(0,0,0,.65)";
+      t.style.color = "rgba(255,255,255,.92)";
+      t.style.fontWeight = "700";
+      t.style.fontSize = "13px";
+      t.style.zIndex = "9999";
+      t.style.opacity = "0";
+      t.style.transition = "opacity .18s ease";
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.opacity = "1";
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(() => t.style.opacity = "0", 1200);
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function getOwnerToken() {
+    const key = "detailnco_owner_token_v1";
+    let tok = localStorage.getItem(key);
+    if (!tok) {
+      tok = (crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now() + "_" + Math.random().toString(16).slice(2));
+      localStorage.setItem(key, tok);
+    }
+    return tok;
+  }
+
+  function formatTime(ts) {
+    try {
+      const d = new Date(Number(ts));
+      return d.toLocaleString(undefined, { year:"numeric", month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+    } catch { return ""; }
+  }
+
+  async function loadReviews() {
+    const res = await fetch(API + "?limit=100", { cache: "no-store" });
+    const data = await res.json();
+    return data.reviews || [];
+  }
+
+  function render(reviews) {
+    if (!reviewBoard) return;
+    if (!reviews.length) {
+      reviewBoard.innerHTML = `<div class="fine muted">No reviews yet. Be the first to leave one.</div>`;
+      return;
+    }
+
+    // We can only show delete button for reviews created on this device
+    const ownerToken = getOwnerToken();
+
+    reviewBoard.innerHTML = reviews.map(r => {
+      // We can’t know ownership without asking server, so we’ll optimistically allow delete only for ids we’ve created.
+      // Better approach below: store owned ids locally.
+      return `
+        <div class="reviewItem" data-id="${escapeHtml(r.id)}">
+          <div class="reviewTop">
+            <div class="reviewName">${escapeHtml(r.name)}</div>
+            <div class="reviewTime">${escapeHtml(formatTime(r.created_at))}</div>
+          </div>
+          <div class="reviewText">${escapeHtml(r.text)}</div>
+          <div class="reviewActions">
+            <button class="btn btn--ghost btn--small js-del-review" type="button">Delete</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    // We’ll enforce ownership on delete via backend token check.
+  }
+
+  async function refresh() {
+    try {
+      const reviews = await loadReviews();
+      render(reviews);
+    } catch {
+      if (reviewBoard) reviewBoard.innerHTML = `<div class="fine muted">Could not load reviews. Try again.</div>`;
+    }
+  }
+
+  async function postReview(name, text) {
+    const ownerToken = getOwnerToken();
+    const res = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+      body: JSON.stringify({ name, text, ownerToken })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "Failed to post");
+    return data;
+  }
+
+  async function deleteReview(id) {
+    const ownerToken = getOwnerToken();
+    const res = await fetch(API + "?id=" + encodeURIComponent(id), {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+      body: JSON.stringify({ ownerToken })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "Delete failed");
+    return data;
+  }
+
+  if (reviewForm && reviewName && reviewText && reviewBoard) {
+    refresh();
+
+    reviewForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = reviewName.value.trim();
+      const text = reviewText.value.trim();
+      if (!name || !text) return;
+
+      try {
+        await postReview(name, text);
+        reviewText.value = "";
+        toast("Review posted");
+        await refresh();
+      } catch (err) {
+        toast(String(err.message || "Could not post"));
+      }
+    });
+
+    reviewBoard.addEventListener("click", async (e) => {
+      const btn = e.target.closest(".js-del-review");
+      if (!btn) return;
+      const wrap = btn.closest(".reviewItem");
+      const id = wrap?.getAttribute("data-id");
+      if (!id) return;
+
+      try {
+        await deleteReview(id);
+        toast("Review deleted");
+        await refresh();
+      } catch (err) {
+        toast("Only the original poster can delete this review");
+      }
+    });
+  }
+})();
+</script>
 
 <body>
   <div class="bg" aria-hidden="true"></div>
@@ -132,4 +303,5 @@
   <script src="app.js"></script>
 </body>
 </html>
+
 
