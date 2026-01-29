@@ -1108,3 +1108,12 @@ textarea{
   *{ scroll-behavior:auto !important; transition:none !important; }
   #fx{ display:none !important; }
 }
+
+/* =========================
+   LOGO VISUAL CENTER FIX
+   (artwork has uneven padding)
+   ========================= */
+.brand__logo{
+  object-fit: contain;
+  object-position: 56% 50%; /* push artwork RIGHT — tweak 54–60% */
+}
