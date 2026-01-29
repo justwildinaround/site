@@ -1412,3 +1412,269 @@ input, textarea, select, button {
     -webkit-tap-highlight-color: transparent;
   }
 }
+
+/* ================================
+   MOBILE FIX PACK (paste at end)
+   ================================ */
+
+/* Prevent weird horizontal overflow on iOS */
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+img, svg, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* iOS Safari font zoom + input weirdness */
+input, textarea, select, button {
+  font-size: 16px;
+}
+
+/* --- Global container padding on small screens --- */
+@media (max-width: 900px) {
+  .container {
+    width: min(1120px, 100%);
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* --- HEADER / NAV --- */
+@media (max-width: 900px) {
+  header, .header, .siteHeader {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    backdrop-filter: blur(10px);
+  }
+
+  /* Whatever your top bar wrapper is, these help most layouts */
+  .header__inner,
+  .nav,
+  .topbar,
+  .siteNav,
+  .headerRow {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+  }
+
+  /* Keep brand from crushing */
+  .brand,
+  .logoWrap,
+  .header__brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-width: 0;
+  }
+
+  .brand img,
+  .logoWrap img,
+  .header__brand img {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+    flex: 0 0 auto;
+  }
+
+  /* Fix the burger button “floating square” issue */
+  .navToggle,
+  .menuBtn,
+  .hamburger,
+  button[aria-label*="menu" i],
+  button[aria-label*="nav" i] {
+    width: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    border-radius: 14px !important;
+    display: grid !important;
+    place-items: center !important;
+    margin-left: auto !important;
+    flex: 0 0 auto !important;
+  }
+
+  /* If your icon lines are spans */
+  .navToggle span,
+  .menuBtn span,
+  .hamburger span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+  }
+}
+
+/* --- HERO LAYOUT --- */
+@media (max-width: 900px) {
+  .hero__grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .hero__title {
+    font-size: clamp(30px, 8vw, 44px) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.02em !important;
+  }
+
+  .hero__sub {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+  }
+
+  .pill {
+    max-width: 100%;
+    white-space: normal !important;
+  }
+
+  .hero__cta {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .btn,
+  .hero__cta .btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .hero__meta {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  /* Make panel behave on mobile */
+  .hero__panel .panel {
+    min-height: 260px !important;
+  }
+
+  .panel__watermark {
+    opacity: 0.22 !important;
+    transform: none !important;
+    right: 12px !important;
+    top: 12px !important;
+    max-width: 80% !important;
+  }
+}
+
+/* --- PAGE GRIDS (Add-ons cards, quick access cards, etc.) --- */
+@media (max-width: 900px) {
+  .grid,
+  .cards,
+  .cardGrid,
+  .features,
+  .addonsGrid,
+  .quickGrid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  /* If you have 3-column add-ons specifically */
+  .addonsColumns,
+  .addons__grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+}
+
+/* --- BIG TEXT BOXES / FORMS (your booking message + reviews) --- */
+@media (max-width: 900px) {
+  textarea,
+  .textarea,
+  .messageBox,
+  .copyBox,
+  .codeBox,
+  .bookingBox {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  textarea {
+    min-height: 180px !important;
+  }
+
+  .formRow,
+  .row,
+  .fieldsRow {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+}
+
+/* --- FOOTER FIX (this is your “vertical letters” problem) --- */
+@media (max-width: 900px) {
+  footer,
+  .footer {
+    padding-bottom: 26px !important;
+  }
+
+  .footer__inner,
+  .footerRow,
+  .footerGrid,
+  .footer__grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    align-items: start !important;
+  }
+
+  /* Stop words from breaking into vertical stacks */
+  .footer a,
+  .footer p,
+  .footer span,
+  .footer li,
+  footer a,
+  footer p,
+  footer span,
+  footer li {
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    white-space: normal !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Stack footer links nicely */
+  .footerNav,
+  .footerLinks,
+  .footer__links,
+  footer nav ul {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px 14px !important;
+  }
+
+  /* Brand block in footer */
+  .footerBrand,
+  .footer__brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+
+  .footerBrand img,
+  .footer__brand img {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 14px !important;
+    flex: 0 0 auto;
+  }
+}
+
+/* --- Extra: smoother tap targets on mobile --- */
+@media (max-width: 900px) {
+  a, button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
