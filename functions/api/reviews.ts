@@ -2,6 +2,28 @@ export interface Env {
   DB: D1Database;
 }
 
+const OWNED_KEY = "detailnco_owned_reviews_v1";
+
+function getOwnedIds() {
+  try {
+    return JSON.parse(localStorage.getItem(OWNED_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function addOwnedId(id) {
+  const ids = getOwnedIds();
+  if (!ids.includes(id)) {
+    ids.push(id);
+    localStorage.setItem(OWNED_KEY, JSON.stringify(ids));
+  }
+}
+
+function isOwned(id) {
+  return getOwnedIds().includes(id);
+}
+
 function json(data: any, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
