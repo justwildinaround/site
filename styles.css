@@ -841,3 +841,62 @@ textarea{
   display:flex;
   justify-content:flex-end;
 }
+
+/* ---------- Mobile fixes for Add-ons layout ---------- */
+@media (max-width: 980px){
+  /* Ensure any inline 3-col grids collapse nicely */
+  .cards[style*="repeat(3"]{
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Card spacing/touch-friendly */
+  .card{
+    border-radius: 18px;
+  }
+
+  /* Add-ons blocks */
+  .addonList{
+    gap: 10px;
+  }
+
+  .addonItem{
+    padding: 12px 12px;
+  }
+
+  /* Keep the price pill from squishing or wrapping ugly */
+  .addonTop{
+    align-items: flex-start;
+  }
+
+  .addonPrice{
+    font-size: 12px;
+    padding: 6px 10px;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+
+  /* Prevent long titles from breaking layout */
+  .addonName{
+    font-size: 14px;
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  /* Make "Small • Med • Large" wrap nicely */
+  .addonItem__price{
+    word-break: break-word;
+  }
+}
+
+/* Extra-small phones */
+@media (max-width: 420px){
+  .addonTop{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .addonPrice{
+    align-self: flex-start;
+  }
+}
