@@ -2,57 +2,34 @@ export interface Env {
   DB: D1Database;
 }
 
-const OWNED_KEY = "detailnco_owned_reviews_v1";
-
-function getOwnedIds() {
-  try {
-    return JSON.parse(localStorage.getItem(OWNED_KEY)) || [];
-  } catch {
-    return [];
-  }
-}
-
-function addOwnedId(id) {
-  const ids = getOwnedIds();
-  if (!ids.includes(id)) {
-    ids.push(id);
-    localStorage.setItem(OWNED_KEY, JSON.stringify(ids));
-  }
-}
-
-function isOwned(id) {
-  return getOwnedIds().includes(id);
+function corsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Cache-Control": "no-store",
+  };
 }
 
 function json(data: any, status = 200) {
-  return new Response(JSON.stringify({ ok: true, id, created_at: createdAt }), { status: 200, headers });
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json", ...corsHeaders() },
+  });
 }
 
 function bad(message: string, status = 400) {
   return json({ ok: false, error: message }, status);
 }
 
-function cors() {
-  return {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Max-Age": "86400",
-  };
-}
-
-export const onRequest: PagesFunction<Env> = async (context) => {
-  const { request, env } = context;
-
-  // Preflight
+export const onRequest: PagesFunction<Env> = async ({ request, env }) => {
   if (request.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: cors() });
+    return new Response(null, { status: 204, headers: corsHeaders() });
   }
 
   const url = new URL(request.url);
-  const headers = { ...cors(), "Content-Type": "application/json", "Cache-Control": "no-store" };
 
-  // GET /api/reviews -> list latest
+  // GET /api/reviews?limit=50
   if (request.method === "GET") {
     const limit = Math.min(Number(url.searchParams.get("limit") || "50"), 200);
 
@@ -61,27 +38,25 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       .bind(limit)
       .all();
 
-    return new Response(JSON.stringify({ ok: true, reviews: results }), { status: 200, headers });
+    return json({ ok: true, reviews: results });
   }
 
-  // POST /api/reviews -> create
+  // POST /api/reviews
   if (request.method === "POST") {
     let body: any;
     try {
       body = await request.json();
     } catch {
-      return new Response(JSON.stringify({ ok: false, error: "Invalid JSON" }), { status: 400, headers });
+      return bad("Invalid JSON");
     }
 
     const name = String(body?.name || "").trim().slice(0, 40);
     const text = String(body?.text || "").trim().slice(0, 500);
     const ownerToken = String(body?.ownerToken || "").trim();
 
-    if (!name) return new Response(JSON.stringify({ ok: false, error: "Name required" }), { status: 400, headers });
-    if (!text) return new Response(JSON.stringify({ ok: false, error: "Review required" }), { status: 400, headers });
-    if (!ownerToken || ownerToken.length < 16) {
-      return new Response(JSON.stringify({ ok: false, error: "Owner token missing" }), { status: 400, headers });
-    }
+    if (!name) return bad("Name required");
+    if (!text) return bad("Review required");
+    if (!ownerToken || ownerToken.length < 16) return bad("Owner token missing");
 
     const id = crypto.randomUUID();
     const createdAt = Date.now();
@@ -92,38 +67,33 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       .bind(id, name, text, createdAt, ownerToken)
       .run();
 
-    return new Response(JSON.stringify({ ok: true, id, created_at: createdAt }), { status: 200, headers });
+    return json({ ok: true, id, created_at: createdAt });
   }
 
-  // DELETE /api/reviews?id=...  (requires ownerToken in JSON body)
+  // DELETE /api/reviews?id=...
   if (request.method === "DELETE") {
     const id = String(url.searchParams.get("id") || "").trim();
-    if (!id) return new Response(JSON.stringify({ ok: false, error: "Missing id" }), { status: 400, headers });
+    if (!id) return bad("Missing id");
 
     let body: any = {};
     try {
       body = await request.json();
-    } catch {
-      // allow empty, but then fail below
-    }
+    } catch {}
 
     const ownerToken = String(body?.ownerToken || "").trim();
-    if (!ownerToken) {
-      return new Response(JSON.stringify({ ok: false, error: "Owner token missing" }), { status: 400, headers });
-    }
+    if (!ownerToken) return bad("Owner token missing");
 
-    const row = await env.DB.prepare("SELECT owner_token FROM reviews WHERE id = ?1")
+    const row = await env.DB
+      .prepare("SELECT owner_token FROM reviews WHERE id = ?1")
       .bind(id)
       .first<{ owner_token: string }>();
 
-    if (!row) return new Response(JSON.stringify({ ok: false, error: "Not found" }), { status: 404, headers });
-    if (row.owner_token !== ownerToken) {
-      return new Response(JSON.stringify({ ok: false, error: "Not allowed" }), { status: 403, headers });
-    }
+    if (!row) return bad("Not found", 404);
+    if (row.owner_token !== ownerToken) return bad("Not allowed", 403);
 
     await env.DB.prepare("DELETE FROM reviews WHERE id = ?1").bind(id).run();
-    return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
+    return json({ ok: true });
   }
 
-  return new Response(JSON.stringify({ ok: false, error: "Method not allowed" }), { status: 405, headers });
+  return bad("Method not allowed", 405);
 };
