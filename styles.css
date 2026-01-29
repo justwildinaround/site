@@ -1176,7 +1176,7 @@ textarea{
 .panel__watermark{
   position: absolute !important;
   left: 50% !important;
-  top: 58% !important;          /* ⬅️ this is the key */
+  top: 60% !important;          /* ⬅️ this is the key */
   transform: translate(-50%, -50%) !important;
 
   width: min(560px, 120%) !important;
@@ -1192,3 +1192,4 @@ textarea{
     top: 62% !important;
   }
 }
+
