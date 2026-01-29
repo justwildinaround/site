@@ -1153,3 +1153,17 @@ textarea{
   }
 }
 
+
+/* Put at VERY bottom */
+.nav .brand__logo{
+  padding: 6px !important;      /* kills puffy look */
+  width: 54px !important;
+  height: 54px !important;
+  border-radius: 14px !important;
+  display: grid !important;
+  place-items: center !important;
+  object-fit: contain !important;
+
+  /* Ignore the image’s internal padding bias */
+  transform: translateX(2px) !important; /* try 2px, then 3px if needed */
+}
