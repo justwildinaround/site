@@ -483,3 +483,72 @@ input:focus, textarea:focus, select:focus{
 .mt18{ margin-top:18px; }
 .mt24{ margin-top:24px; }
 .hidden{ display:none !important; }
+
+/* =========================================================
+   HERO PANEL WATERMARK FIX (keep your HTML exactly as-is)
+   ========================================================= */
+
+/* Layout stays clean */
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Keep your grid but make it responsive */
+.hero__grid{
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 22px;
+  align-items: start;
+}
+@media (max-width: 980px){
+  .hero__grid{ grid-template-columns: 1fr; }
+}
+
+/* Hero panel: glass, contained, premium */
+.hero__panel .panel{
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  box-shadow: 0 18px 48px rgba(0,0,0,.55);
+  padding: 18px;
+  min-height: 360px;
+}
+
+/* This is the KEY: watermark becomes subtle and stays out of the way */
+.hero__panel .panel__watermark{
+  position: absolute;
+  right: -140px;
+  bottom: -180px;
+  width: min(640px, 88vw);
+  height: auto;
+  opacity: .10;                 /* watermark, not content */
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 22px 52px rgba(0,0,0,.62));
+  transform: rotate(-6deg);
+}
+
+/* If you also display a real logo inside the panel, keep it contained */
+.hero__panel .panel img:not(.panel__watermark){
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 40px rgba(0,0,0,.55));
+}
+
+/* Mobile tuning: reduce watermark impact */
+@media (max-width: 520px){
+  .hero__panel .panel{
+    min-height: 300px;
+    padding: 14px;
+  }
+  .hero__panel .panel__watermark{
+    right: -180px;
+    bottom: -220px;
+    width: 520px;
+    opacity: .07;
+  }
+}
