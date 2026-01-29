@@ -128,14 +128,14 @@ button,input,textarea,select{ font:inherit; }
   align-items:center;
   justify-content:space-between;
   gap:18px;
-  padding:14px 0;
+  padding:9px 0 !important;
 }
 
 .brand{
   display:flex;
   align-items:center;
-  gap:12px;
-  min-width:260px;
+  gap:10px;
+  min-width:0px;
 }
 
 /* LOGO: bigger + visually centered */
@@ -1167,3 +1167,4 @@ textarea{
   /* Ignore the image’s internal padding bias */
   transform: translateX(2px) !important; /* try 2px, then 3px if needed */
 }
+
