@@ -1168,3 +1168,29 @@ textarea{
   transform: translateX(2px) !important; /* try 2px, then 3px if needed */
 }
 
+
+/* =========================
+   HERO PANEL: watermark true-centering + less dead space
+   Paste at VERY BOTTOM
+   ========================= */
+
+/* Make the big faint logo/graphic ALWAYS centered in the panel */
+.panel__watermark{
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+  width: min(560px, 125%) !important;
+  height: auto !important;
+  opacity: .12 !important;
+}
+
+/* Reduce “too much spacing” inside the hero panel on mobile */
+@media (max-width: 980px){
+  .panel{ padding: 14px !important; }
+  .panel__center{
+    min-height: 200px !important;   /* was 240 */
+    padding: 12px 8px 6px !important;
+  }
+}
