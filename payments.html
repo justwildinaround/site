@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#070a10" />
+  <title>Payments — Detail’N Co.</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="bg bg--dither" aria-hidden="true"></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="index.html" aria-label="Home">
+        <img class="brand__logo" src="assets/logo.png" alt="Detail’N Co. logo" onerror="this.style.display='none'">
+        <div class="brand__stack">
+          <div class="brand__name">DETAIL’N CO.</div>
+          <div class="brand__tag">Mobile Auto Detailing</div>
+        </div>
+      </a>
+
+      <nav class="nav__links" aria-label="Primary">
+        <a href="packages.html">Packages</a>
+        <a href="addons.html">Add-ons</a>
+        <a href="payments.html" aria-current="page">Payments</a>
+        <a href="service-area.html">Service Area</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="nav__mobile" id="navMobile" aria-hidden="true">
+      <a href="packages.html">Packages</a>
+      <a href="addons.html">Add-ons</a>
+      <a href="payments.html">Payments</a>
+      <a href="service-area.html">Service Area</a>
+      <a href="contact.html">Contact</a>
+      <a class="btn btn--ghost" href="https://instagram.com/detail.n.co" target="_blank" rel="noreferrer">Instagram</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" style="padding-top:42px;">
+      <div class="container">
+        <div class="head">
+          <div class="kicker">Payments</div>
+          <h2>Accepted payment methods.</h2>
+          <p>We keep it simple for fast, on-site service.</p>
+        </div>
+
+        <div class="cards" style="grid-template-columns: repeat(2, 1fr);">
+          <article class="card">
+            <div class="card__head">
+              <div class="tag tag--blue">E-TRANSFER</div>
+              <div class="card__title">Interac E-Transfer</div>
+              <div class="card__desc">Fast, secure payment directly from your banking app.</div>
+            </div>
+            <ul class="list">
+              <li>Preferred method</li>
+              <li>Available for any package or add-on</li>
+              <li>Receipt available on request</li>
+            </ul>
+            <div class="card__foot">
+              <a class="btn btn--ghost btn--full" href="contact.html">Ask about E-Transfer</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card__head">
+              <div class="tag tag--red">CASH</div>
+              <div class="card__title">Cash</div>
+              <div class="card__desc">Simple on-site payment after completion.</div>
+            </div>
+            <ul class="list">
+              <li>Available for any package or add-on</li>
+              <li>Please have exact amount if possible</li>
+              <li>Receipt available on request</li>
+            </ul>
+            <div class="card__foot">
+              <a class="btn btn--primary btn--full" href="contact.html">Contact Us</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="notice">
+          <div class="notice__bar"></div>
+          <div class="notice__text">
+            <strong>Payments accepted: E-Transfer, Cash, Debit / Credit, and Online Payment.</strong>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <a class="footerBrand" href="index.html" aria-label="Home">
+            <img class="footerBrand__logo" src="assets/logo.png" alt="Detail’N Co. logo" onerror="this.style.display='none'">
+            <div class="footerBrand__stack">
+              <div class="footerBrand__name">DETAIL’N CO.</div>
+              <div class="footerBrand__tag">Mobile Auto Detailing</div>
+            </div>
+          </a>
+
+          <div class="footerLinks">
+            <a href="packages.html">Packages</a>
+            <a href="addons.html">Add-ons</a>
+            <a href="service-area.html">Service Area</a>
+            <a href="contact.html">Contact</a>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
