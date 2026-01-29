@@ -1678,3 +1678,204 @@ input, textarea, select, button {
     -webkit-tap-highlight-color: transparent;
   }
 }
+
+/* ===============================
+   EMERGENCY OVERRIDES (MOBILE)
+   Paste at the very bottom
+   =============================== */
+
+@media (max-width: 900px) {
+
+  /* --- HAMBURGER BUTTON FIX --- */
+  /* Force the button to behave like a normal centered icon */
+  .navToggle,
+  .menuBtn,
+  .hamburger,
+  .mobileMenuBtn,
+  button[aria-label*="menu" i],
+  button[aria-label*="navigation" i]{
+    position: relative !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    border-radius: 14px !important;
+    overflow: hidden !important;
+  }
+
+  /* If your hamburger uses spans (3 lines) */
+  .navToggle span,
+  .menuBtn span,
+  .hamburger span,
+  .mobileMenuBtn span {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+    margin: 2.5px 0 !important;
+    width: 18px !important;
+    height: 2px !important;
+    border-radius: 2px !important;
+    display: block !important;
+  }
+
+  /* If your hamburger is made with ::before/::after (common) */
+  .navToggle::before,
+  .navToggle::after,
+  .menuBtn::before,
+  .menuBtn::after,
+  .hamburger::before,
+  .hamburger::after,
+  .mobileMenuBtn::before,
+  .mobileMenuBtn::after {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 18px !important;
+    height: 2px !important;
+    border-radius: 2px !important;
+    content: "" !important;
+  }
+
+  /* Put the pseudo lines in the right place if they exist */
+  .navToggle::before,
+  .menuBtn::before,
+  .hamburger::before,
+  .mobileMenuBtn::before { top: 14px !important; }
+
+  .navToggle::after,
+  .menuBtn::after,
+  .hamburger::after,
+  .mobileMenuBtn::after { top: 28px !important; }
+
+  /* If you have a middle bar element */
+  .navToggle i,
+  .menuBtn i,
+  .hamburger i,
+  .mobileMenuBtn i {
+    position: absolute !important;
+    left: 50% !important;
+    top: 21px !important;
+    transform: translateX(-50%) !important;
+    width: 18px !important;
+    height: 2px !important;
+    border-radius: 2px !important;
+    display: block !important;
+  }
+
+  /* --- FOOTER “VERTICAL LETTERS” FIX --- */
+  /* This is almost always word-break/break-all or a too-narrow column */
+  footer, .footer {
+    overflow: hidden !important;
+  }
+
+  /* Force footer layout to a real stacked grid */
+  .footer__inner,
+  .footerRow,
+  .footerGrid,
+  .footer__grid,
+  footer .container {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  /* Stop ANY vertical/forced breaking behavior */
+  footer *,
+  .footer * {
+    writing-mode: horizontal-tb !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    white-space: normal !important;
+    letter-spacing: normal !important;
+    text-align: left !important;
+  }
+
+  /* Make footer links form clean columns */
+  .footerNav,
+  .footerLinks,
+  .footer__links,
+  footer nav ul {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px 14px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+  }
+}
+
+/* ===============================
+   MOBILE: HERO LOGO / PANEL CENTERING FIX
+   Paste at the very bottom
+   =============================== */
+
+@media (max-width: 900px){
+
+  /* The right-side hero panel container */
+  .hero__panel,
+  .panel{
+    width: 100% !important;
+  }
+
+  /* The hero “card” itself */
+  .panel{
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  /* Whatever wrapper holds the logo/text inside the panel */
+  .panel > *{
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Center the panel’s main branding block */
+  .panel h2,
+  .panel .panel__title,
+  .panel .panel__brand,
+  .panel .panel__logo,
+  .panel .panel__content,
+  .panel .panel__inner{
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+  }
+
+  /* Make sure the watermark (bunny/logo background) is truly centered */
+  .panel__watermark{
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: min(520px, 120%) !important;
+    height: auto !important;
+    opacity: 0.14 !important; /* keep it subtle */
+    pointer-events: none !important;
+    z-index: 1 !important;
+    filter: saturate(1.05) contrast(1.05);
+  }
+
+  /* If you have a “top pill” row in the panel (SELECT • SIGNATURE • SHOWROOM) */
+  .panel .pillRow,
+  .panel .panel__row,
+  .panel .panel__top{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
+  }
+
+  /* If there’s a tiny gradient bar on the right (like in your screenshot), center it too */
+  .panel .miniBar,
+  .panel .panel__bar,
+  .panel .panel__meter{
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
