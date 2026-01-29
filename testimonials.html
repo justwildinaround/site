@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#070a10" />
+  <title>Reviews — Detail’N Co.</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="bg bg--dither" aria-hidden="true"></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="index.html" aria-label="Home">
+        <img class="brand__logo" src="assets/logo.png" alt="Detail’N Co. logo" onerror="this.style.display='none'">
+        <div class="brand__stack">
+          <div class="brand__name">DETAIL’N CO.</div>
+          <div class="brand__tag">Mobile Auto Detailing</div>
+        </div>
+      </a>
+
+      <nav class="nav__links" aria-label="Primary">
+        <a href="packages.html">Packages</a>
+        <a href="addons.html">Add-ons</a>
+        <a href="payments.html">Payments</a>
+        <a href="service-area.html">Service Area</a>
+        <a href="testimonials.html" aria-current="page">Reviews</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="nav__mobile" id="navMobile" aria-hidden="true">
+      <a href="packages.html">Packages</a>
+      <a href="addons.html">Add-ons</a>
+      <a href="payments.html">Payments</a>
+      <a href="service-area.html">Service Area</a>
+      <a href="testimonials.html">Reviews</a>
+      <a href="contact.html">Contact</a>
+      <a class="btn btn--ghost" href="https://instagram.com/detail.n.co" target="_blank" rel="noreferrer">Instagram</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" style="padding-top:42px;">
+      <div class="container">
+        <div class="head">
+          <div class="kicker">Reviews</div>
+          <h2>Customer testimonials.</h2>
+          <p>Share your experience with Detail’N Co. Your review appears instantly with a timestamp.</p>
+        </div>
+
+        <div class="reviewGrid">
+          <!-- Form -->
+          <div class="card reviewFormCard">
+            <div class="card__head">
+              <div class="tag tag--blue">LEAVE A REVIEW</div>
+              <div class="card__title">Write yours here</div>
+              <div class="card__desc">Be honest and specific — it helps others.</div>
+            </div>
+
+            <form id="reviewForm" class="reviewForm" autocomplete="off">
+              <label class="field">
+                <span class="field__label">Your name</span>
+                <input id="reviewName" type="text" maxlength="40" placeholder="e.g., Alex" required />
+              </label>
+
+              <label class="field">
+                <span class="field__label">Your review</span>
+                <textarea id="reviewText" rows="6" maxlength="500" placeholder="What did you like? What stood out?" required></textarea>
+              </label>
+
+              <button class="btn btn--primary btn--full" type="submit">Post review</button>
+
+              <div class="fine muted" style="margin-top:10px;">
+                You can delete reviews you posted from this browser/device.
+              </div>
+            </form>
+          </div>
+
+          <!-- Board -->
+          <div class="card reviewBoardCard">
+            <div class="card__head">
+              <div class="tag tag--red">REVIEW BOARD</div>
+              <div class="card__title">Latest reviews</div>
+              <div class="card__desc">Newest first. Timestamp included.</div>
+            </div>
+
+            <div id="reviewBoard" class="reviewBoard" aria-live="polite"></div>
+
+            <div class="notice" style="margin-top:14px;">
+              <div class="notice__bar"></div>
+              <div class="notice__text">
+                Reviews are stored locally (no account system). For public, cross-device reviews later, we can add a free backend.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <a class="footerBrand" href="index.html" aria-label="Home">
+            <img class="footerBrand__logo" src="assets/logo.png" alt="Detail’N Co. logo" onerror="this.style.display='none'">
+            <div class="footerBrand__stack">
+              <div class="footerBrand__name">DETAIL’N CO.</div>
+              <div class="footerBrand__tag">Mobile Auto Detailing</div>
+            </div>
+          </a>
+
+          <div class="footerLinks">
+            <a href="packages.html">Packages</a>
+            <a href="addons.html">Add-ons</a>
+            <a href="payments.html">Payments</a>
+            <a href="service-area.html">Service Area</a>
+            <a href="contact.html">Contact</a>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
