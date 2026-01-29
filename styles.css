@@ -1110,10 +1110,46 @@ textarea{
 }
 
 /* =========================
-   LOGO VISUAL CENTER FIX
-   (artwork has uneven padding)
+   NAV TIGHTENING + LOGO TRUE-CENTER
+   Paste at VERY BOTTOM
    ========================= */
-.brand__logo{
-  object-fit: contain;
-  object-position: 56% 50%; /* push artwork RIGHT — tweak 54–60% */
+
+/* 1) Tighten overall header height */
+.nav__inner{
+  padding: 10px 0 !important;   /* was 14px */
+  gap: 12px !important;
 }
+
+/* 2) Remove forced width that causes extra empty space */
+.brand{
+  min-width: 0 !important;      /* was 260px */
+  gap: 10px !important;
+}
+
+/* 3) Make the logo tile less “puffy” + slightly bigger presence */
+.brand__logo{
+  width: 54px !important;
+  height: 54px !important;
+  padding: 6px !important;      /* was 10px */
+  border-radius: 14px !important;
+
+  /* The REAL fix: push the artwork within the PNG */
+  object-fit: contain !important;
+  object-position: 70% 50% !important;  /* stronger shift right */
+}
+
+/* 4) Tighten the text stack spacing so it doesn't look stretched */
+.brand__stack{ gap: 1px !important; }
+.brand__name{ line-height: 1.05 !important; }
+.brand__tag{ line-height: 1.05 !important; }
+
+/* Mobile: even tighter + consistent */
+@media (max-width: 900px){
+  .nav__inner{ padding: 9px 0 !important; }
+  .brand__logo{
+    width: 50px !important;
+    height: 50px !important;
+    padding: 6px !important;
+  }
+}
+
