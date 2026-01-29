@@ -29,7 +29,7 @@
         <a href="addons.html">Add-ons</a>
         <a href="payments.html">Payments</a>
         <a href="service-area.html">Service Area</a>
-		<a href="testimonials.html">Reviews</a>
+        <a href="testimonials.html">Reviews</a>
         <a href="contact.html">Contact</a>
       </nav>
 
@@ -43,7 +43,7 @@
       <a href="addons.html">Add-ons</a>
       <a href="payments.html">Payments</a>
       <a href="service-area.html">Service Area</a>
-		<a href="testimonials.html">Reviews</a>
+      <a href="testimonials.html">Reviews</a>
       <a href="contact.html">Contact</a>
       <a class="btn btn--ghost" href="https://instagram.com/detail.n.co" target="_blank" rel="noreferrer">Instagram</a>
     </div>
@@ -59,6 +59,7 @@
         </div>
 
         <div class="cards">
+          <!-- SELECT -->
           <article class="card">
             <div class="card__head">
               <div class="tag tag--blue">SELECT</div>
@@ -81,10 +82,26 @@
 
             <div class="card__foot">
               <div class="fine">45–60 minutes (small vehicles)</div>
-              <a class="btn btn--ghost btn--full" href="contact.html">Request Select</a>
+
+              <!-- Continue buttons (select size) -->
+              <div class="cta__actions" style="margin:0;">
+                <button class="btn btn--ghost btn--full js-continue"
+                        data-package="select" data-size="small" data-price="89.99">
+                  Continue — Small ($89.99)
+                </button>
+                <button class="btn btn--ghost btn--full js-continue"
+                        data-package="select" data-size="medium" data-price="109.99">
+                  Continue — Medium ($109.99)
+                </button>
+                <button class="btn btn--ghost btn--full js-continue"
+                        data-package="select" data-size="large" data-price="124.99">
+                  Continue — Large ($124.99)
+                </button>
+              </div>
             </div>
           </article>
 
+          <!-- SIGNATURE -->
           <article class="card card--featured">
             <div class="card__head">
               <div class="tag tag--red">SIGNATURE</div>
@@ -107,10 +124,25 @@
 
             <div class="card__foot">
               <div class="fine">90–150 minutes (small vehicles)</div>
-              <a class="btn btn--primary btn--full" href="contact.html">Request Signature</a>
+
+              <div class="cta__actions" style="margin:0;">
+                <button class="btn btn--primary btn--full js-continue"
+                        data-package="signature" data-size="small" data-price="134.99">
+                  Continue — Small ($134.99)
+                </button>
+                <button class="btn btn--primary btn--full js-continue"
+                        data-package="signature" data-size="medium" data-price="164.99">
+                  Continue — Medium ($164.99)
+                </button>
+                <button class="btn btn--primary btn--full js-continue"
+                        data-package="signature" data-size="large" data-price="182.99">
+                  Continue — Large ($182.99)
+                </button>
+              </div>
             </div>
           </article>
 
+          <!-- SHOWROOM -->
           <article class="card">
             <div class="card__head">
               <div class="tag tag--blue">SHOWROOM</div>
@@ -133,7 +165,21 @@
 
             <div class="card__foot">
               <div class="fine">Approx. 4 hours (small vehicles)</div>
-              <a class="btn btn--ghost btn--full" href="contact.html">Request Showroom</a>
+
+              <div class="cta__actions" style="margin:0;">
+                <button class="btn btn--ghost btn--full js-continue"
+                        data-package="showroom" data-size="small" data-price="249.99">
+                  Continue — Small ($249.99)
+                </button>
+                <button class="btn btn--ghost btn--full js-continue"
+                        data-package="showroom" data-size="medium" data-price="299.99">
+                  Continue — Medium ($299.99)
+                </button>
+                <button class="btn btn--ghost btn--full js-continue"
+                        data-package="showroom" data-size="large" data-price="339.99">
+                  Continue — Large ($339.99)
+                </button>
+              </div>
             </div>
           </article>
         </div>
@@ -167,6 +213,22 @@
   </main>
 
   <script src="app.js"></script>
+
+  <!-- Packages -> Add-ons handoff -->
+  <script>
+    document.querySelectorAll(".js-continue").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const pkg = btn.dataset.package;
+        const size = btn.dataset.size;
+        const price = btn.dataset.price;
+
+        localStorage.setItem("dnco_package", pkg);
+        localStorage.setItem("dnco_size", size);
+        localStorage.setItem("dnco_base_price", price);
+
+        window.location.href = "addons.html";
+      });
+    });
+  </script>
 </body>
 </html>
-
