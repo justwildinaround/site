@@ -4,24 +4,28 @@
    ========================= */
 
 :root{
-  /* Graphite / Ice / Steel */
-  --bg0:#0b0e13;
-  --bg1:#10141b;
-  --bg2:#0e1218;
+  /* PURE GRAPHITE BASE */
+  --bg0:#0e1116;   /* main page */
+  --bg1:#121722;   /* raised surfaces */
+  --bg2:#0b0f14;   /* deep contrast */
 
-  --line:rgba(255,255,255,.08);
-  --text:rgba(255,255,255,.94);
-  --muted:rgba(255,255,255,.62);
-  --muted2:rgba(255,255,255,.48);
+  /* TEXT */
+  --text:rgba(255,255,255,.95);
+  --muted:rgba(255,255,255,.60);
+  --muted2:rgba(255,255,255,.45);
 
-  --red:#e64545;
-  --blue:#3aa0ff;
+  /* PROFESSIONAL BLUE (single accent) */
+  --blue:#2f7df6;  /* dealership / trust blue */
 
-  --shadow:0 18px 55px rgba(0,0,0,.58);
-  --r:20px;
-  --r2:28px;
+  /* SYSTEM */
+  --line:rgba(255,255,255,.07);
+  --shadow:0 14px 42px rgba(0,0,0,.55);
+
+  --r:18px;
+  --r2:24px;
   --max:1180px;
 }
+
 
 
 /* ---------- Base / resets ---------- */
@@ -1150,25 +1154,24 @@ textarea{
 }
 
 /* =========================
-   Option A Polish (pro + sharp)
-   Paste at VERY BOTTOM
+   PURE GRAPHITE + PRO BLUE
+   (No legacy color influence)
    ========================= */
 
-/* Slightly calmer page background */
+/* Background: flat, serious, expensive */
 body{
-  background: linear-gradient(180deg, var(--bg0) 0%, #070a0f 100%);
+  background:
+    linear-gradient(180deg, var(--bg0) 0%, #090c10 100%);
 }
 
-/* Background gradient: less “neon”, more premium */
+/* Kill old colorful glows */
 .bg{
   background:
-    radial-gradient(1200px 900px at 18% -10%, rgba(58,160,255,.09), transparent 62%),
-    radial-gradient(1100px 850px at 86% 0%, rgba(230,69,69,.06), transparent 62%),
-    radial-gradient(900px 800px at 50% 120%, rgba(58,160,255,.05), transparent 60%),
-    linear-gradient(180deg, var(--bg0) 0%, var(--bg2) 45%, var(--bg1) 100%);
+    radial-gradient(1200px 900px at 50% -10%, rgba(47,125,246,.05), transparent 60%),
+    linear-gradient(180deg, var(--bg0) 0%, var(--bg2) 100%);
 }
 
-/* Make borders a touch more refined */
+/* Borders = precise, quiet */
 .nav,
 .card,
 .panel,
@@ -1188,45 +1191,68 @@ body{
   border-color: var(--line);
 }
 
-/* Tone down “glow” a bit for pro look */
-.pill__dot{
-  background: rgba(58,160,255,.92);
-  box-shadow: 0 0 14px rgba(58,160,255,.18);
-}
-.dot--blue, .metaDot--blue, .pay__icon--blue{
-  background: rgba(58,160,255,.92);
-  box-shadow: 0 0 14px rgba(58,160,255,.14);
-}
-.dot--red, .metaDot--red, .pay__icon--red{
-  background: rgba(230,69,69,.92);
-  box-shadow: 0 0 14px rgba(230,69,69,.12);
+/* Remove ALL color glow behavior */
+.pill__dot,
+.dot,
+.metaDot,
+.pay__icon{
+  background: var(--blue);
+  box-shadow: none;
 }
 
-/* Buttons: sharper + less “RGB” */
+/* Pills look like UI chips now */
+.pill,
+.chip,
+.tag{
+  background: rgba(255,255,255,.025);
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+/* Buttons: restrained, confident */
 .btn{
-  background: rgba(255,255,255,.028);
-}
-.btn--primary{
-  background: linear-gradient(135deg, rgba(230,69,69,.88), rgba(58,160,255,.42));
-  box-shadow: 0 16px 46px rgba(0,0,0,.52);
-}
-.btn--primary:hover{
-  box-shadow: 0 20px 62px rgba(0,0,0,.62);
+  background: rgba(255,255,255,.035);
+  border-color: var(--line);
 }
 
-/* Accent text: cleaner (less bright) */
+.btn--primary{
+  background: linear-gradient(180deg, rgba(47,125,246,.92), rgba(47,125,246,.78));
+  box-shadow: 0 10px 28px rgba(0,0,0,.55);
+}
+
+.btn--primary:hover{
+  filter: brightness(1.05);
+  box-shadow: 0 14px 38px rgba(0,0,0,.65);
+}
+
+/* Accent text = subtle, professional */
 .accent{
-  background: linear-gradient(90deg, rgba(255,255,255,.96), rgba(58,160,255,.55));
+  background: linear-gradient(90deg, rgba(255,255,255,.96), rgba(47,125,246,.60));
   -webkit-background-clip:text;
   background-clip:text;
   color: transparent;
 }
 
-/* Panels/cards: slightly flatter = more premium */
-.card, .panel{
-  box-shadow: 0 14px 44px rgba(0,0,0,.44);
+/* Panels/cards flatter = luxury */
+.card,
+.panel{
+  box-shadow: 0 12px 34px rgba(0,0,0,.48);
 }
+
+/* Feature card = blue line emphasis, not color fill */
 .card--featured{
-  border-color: rgba(230,69,69,.18);
-  box-shadow: 0 18px 56px rgba(0,0,0,.56);
+  border-color: rgba(47,125,246,.35);
+  box-shadow: 0 16px 46px rgba(0,0,0,.60);
+}
+
+/* Hero watermark stays subtle + clean */
+.panel__watermark{
+  opacity:.12;
+  filter: saturate(0) contrast(1.05);
+}
+
+/* Remove any remaining glow-based halos */
+.halo{
+  opacity:.35;
+  filter: blur(10px);
 }
