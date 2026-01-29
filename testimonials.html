@@ -301,7 +301,218 @@
   </main>
 
   <script src="app.js"></script>
+  <script>
+(() => {
+  const API = "/api/reviews";
+
+  const reviewForm = document.getElementById("reviewForm");
+  const reviewBoard = document.getElementById("reviewBoard");
+  const reviewName = document.getElementById("reviewName");
+  const reviewText = document.getElementById("reviewText");
+
+  const OWNER_TOKEN_KEY = "detailnco_owner_token_v1";
+  const OWNED_REVIEWS_KEY = "detailnco_owned_reviews_v1";
+
+  // --- toast: use your existing global toast if available, else fallback
+  function toastSafe(msg) {
+    if (typeof window.toast === "function") {
+      window.toast(msg);
+      return;
+    }
+    let t = document.getElementById("toast");
+    if (!t) {
+      t = document.createElement("div");
+      t.id = "toast";
+      Object.assign(t.style, {
+        position: "fixed",
+        left: "50%",
+        bottom: "20px",
+        transform: "translateX(-50%)",
+        padding: "10px 14px",
+        borderRadius: "12px",
+        background: "rgba(0,0,0,.7)",
+        color: "#fff",
+        fontSize: "13px",
+        fontWeight: "700",
+        zIndex: 9999,
+        opacity: 0,
+        transition: "opacity .2s ease"
+      });
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.opacity = "1";
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(() => (t.style.opacity = "0"), 1400);
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function formatTime(ts) {
+    try {
+      const d = new Date(Number(ts));
+      return d.toLocaleString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return "";
+    }
+  }
+
+  function getOwnerToken() {
+    let tok = localStorage.getItem(OWNER_TOKEN_KEY);
+    if (!tok) {
+      tok = (crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now() + "_" + Math.random().toString(16).slice(2));
+      localStorage.setItem(OWNER_TOKEN_KEY, tok);
+    }
+    return tok;
+  }
+
+  function getOwnedIds() {
+    try {
+      return JSON.parse(localStorage.getItem(OWNED_REVIEWS_KEY)) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  function addOwnedId(id) {
+    const ids = getOwnedIds();
+    if (!ids.includes(id)) {
+      ids.push(id);
+      localStorage.setItem(OWNED_REVIEWS_KEY, JSON.stringify(ids));
+    }
+  }
+
+  function removeOwnedId(id) {
+    const ids = getOwnedIds().filter(x => x !== id);
+    localStorage.setItem(OWNED_REVIEWS_KEY, JSON.stringify(ids));
+  }
+
+  function isOwned(id) {
+    return getOwnedIds().includes(id);
+  }
+
+  async function loadReviews() {
+    const res = await fetch(API + "?limit=100", { cache: "no-store" });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "Failed to load");
+    return data.reviews || [];
+  }
+
+  async function postReview(name, text) {
+    const res = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+      body: JSON.stringify({ name, text, ownerToken: getOwnerToken() })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "Failed to post");
+    return data; // expects { ok:true, id, created_at }
+  }
+
+  async function deleteReview(id) {
+    const res = await fetch(API + "?id=" + encodeURIComponent(id), {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+      body: JSON.stringify({ ownerToken: getOwnerToken() })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "Delete failed");
+    return data;
+  }
+
+  function render(reviews) {
+    if (!reviewBoard) return;
+
+    if (!reviews.length) {
+      reviewBoard.innerHTML = `<div class="fine muted">No reviews yet. Be the first to leave one.</div>`;
+      return;
+    }
+
+    reviewBoard.innerHTML = reviews.map(r => {
+      const owned = isOwned(r.id);
+      return `
+        <div class="reviewItem" data-id="${escapeHtml(r.id)}">
+          <div class="reviewTop">
+            <div class="reviewName">${escapeHtml(r.name)}</div>
+            <div class="reviewTime">${escapeHtml(formatTime(r.created_at))}</div>
+          </div>
+          <div class="reviewText">${escapeHtml(r.text)}</div>
+          ${owned ? `
+            <div class="reviewActions">
+              <button class="btn btn--ghost btn--small js-del-review" type="button">Delete</button>
+            </div>
+          ` : ``}
+        </div>
+      `;
+    }).join("");
+  }
+
+  async function refresh() {
+    try {
+      const reviews = await loadReviews();
+      render(reviews);
+    } catch (e) {
+      if (reviewBoard) reviewBoard.innerHTML = `<div class="fine muted">Unable to load reviews.</div>`;
+    }
+  }
+
+  if (reviewForm && reviewBoard && reviewName && reviewText) {
+    refresh();
+
+    reviewForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = reviewName.value.trim();
+      const text = reviewText.value.trim();
+      if (!name || !text) return;
+
+      try {
+        const result = await postReview(name, text);
+        if (result?.id) addOwnedId(result.id);
+        reviewText.value = "";
+        toastSafe("Review posted");
+        await refresh();
+      } catch (err) {
+        toastSafe(err?.message || "Could not post");
+      }
+    });
+
+    reviewBoard.addEventListener("click", async (e) => {
+      const btn = e.target.closest(".js-del-review");
+      if (!btn) return;
+
+      const wrap = btn.closest(".reviewItem");
+      const id = wrap?.getAttribute("data-id");
+      if (!id) return;
+
+      try {
+        await deleteReview(id);
+        removeOwnedId(id);
+        toastSafe("Review deleted");
+        await refresh();
+      } catch (err) {
+        toastSafe("You can only delete your own review");
+      }
+    });
+  }
+})();
+</script>
 </body>
 </html>
+
 
 
