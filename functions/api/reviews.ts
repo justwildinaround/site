@@ -25,13 +25,7 @@ function isOwned(id) {
 }
 
 function json(data: any, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-      "Cache-Control": "no-store",
-    },
-  });
+  return new Response(JSON.stringify({ ok: true, id, created_at: createdAt }), { status: 200, headers });
 }
 
 function bad(message: string, status = 400) {
