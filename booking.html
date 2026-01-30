@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#070a10" name="theme-color"/>
+<title>Booking — Detail’N Co.</title>
+<meta content="Request a mobile detailing booking. Choose a date, time, package and add-ons. Requests are approved by email." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="styles.css" rel="stylesheet"/>
+</head>
+<body>
+<div aria-hidden="true" class="bg"></div>
+<div aria-hidden="true" class="bg bg--dither"></div>
+<header class="nav">
+<div class="container nav__inner">
+<a aria-label="Home" class="brand" href="index.html">
+<img alt="Detail’N Co. logo" class="brand__logo" onerror="this.style.display='none'" src="assets/logo.png"/>
+<div class="brand__stack">
+<div class="brand__name">DETAIL’N CO.</div>
+<div class="brand__tag">Mobile Auto Detailing</div>
+</div>
+</a>
+<nav aria-label="Primary" class="nav__links">
+<a href="packages.html">Packages</a>
+<a href="addons.html">Add-ons</a>
+<a href="payments.html">Payments</a>
+<a href="service-area.html">Service Area</a>
+<a href="testimonials.html">Reviews</a>
+<a aria-current="page" href="booking.html">Book</a>
+<a href="contact.html">Contact</a>
+</nav>
+<button aria-expanded="false" aria-label="Open menu" class="nav__toggle" id="navToggle">
+<span></span><span></span><span></span>
+</button>
+</div>
+<div aria-hidden="true" class="nav__mobile" id="navMobile">
+<a href="packages.html">Packages</a>
+<a href="addons.html">Add-ons</a>
+<a href="payments.html">Payments</a>
+<a href="service-area.html">Service Area</a>
+<a href="testimonials.html">Reviews</a>
+<a aria-current="page" href="booking.html">Book</a>
+<a href="contact.html">Contact</a>
+<a class="btn btn--ghost" href="https://instagram.com/detail.n.co" rel="noreferrer" target="_blank">Instagram</a>
+</div>
+</header>
+<main>
+<section class="section" style="padding-top:42px;">
+<div class="container">
+<div class="head">
+<div class="kicker">Booking</div>
+<h2>Request a time — we approve it by email.</h2>
+<p>Choose a date, a preferred start time, and your desired package/add-ons. Your request will <span class="accent">soft-hold</span> the slot for 45 minutes while we approve/reject it from email. Once approved, you’ll get an automatic confirmation email.</p>
+<div class="pill" style="margin-top:14px;">
+<span aria-hidden="true" class="pill__dot"></span>
+<span><strong>Hours:</strong> Weekdays 4:30pm–10:00pm • Sat/Sun 5:00am–10:00pm</span>
+</div>
+</div>
+<div class="cta" style="gap:18px;">
+<div class="cta__left">
+<div class="form" id="bookingCard">
+<div class="form__title">Booking Request</div>
+<div class="form__hint">Pick a date — then choose a start time from what’s available.</div>
+<form id="bookingForm" novalidate="">
+<div class="formGrid">
+<label class="field">
+<span class="field__label">Date</span>
+<input id="date" name="date" required="" type="date"/>
+<span class="field__hint">Local Ottawa time.</span>
+</label><label class="field"><span class="field__label">Package</span><select id="package" name="package" required="required"><option value="">Select a package…</option></select><span class="field__hint">You can add extras below.</span></label><label class="field"><span class="field__label">Vehicle size</span><select id="vehicleSize" name="vehicleSize" required="required"><option value="small">Small (Coupe/Sedan)</option><option value="medium">Medium (SUV/Crossover)</option><option value="large">Large (Truck/Van &lt;½ ton)</option></select><span class="field__hint">Used only for pricing estimate.</span></label>
+<label class="field" style="grid-column:1 / -1;">
+<span class="field__label">Preferred start time</span>
+<select id="startTime" name="startTime" required="">
+<option value="">Select a date first…</option>
+</select>
+<span class="field__hint" id="slotHint">Available start times will appear here.</span>
+</label>
+<label class="field">
+<span class="field__label">Full name</span>
+<input autocomplete="name" id="name" name="name" placeholder="Your name" required=""/>
+</label>
+<label class="field">
+<span class="field__label">Email</span>
+<input autocomplete="email" id="email" name="email" placeholder="you@email.com" required="" type="email"/>
+</label>
+<label class="field">
+<span class="field__label">Phone</span>
+<input autocomplete="tel" id="phone" name="phone" placeholder="Optional"/>
+</label>
+<label class="field">
+<span class="field__label">Postal code / area</span>
+<input id="location" name="location" placeholder="K2K / Kanata / Ottawa…" required=""/>
+</label>
+<label class="field" style="grid-column:1 / -1;">
+<span class="field__label">Vehicle</span>
+<input id="vehicle" name="vehicle" placeholder="Year / Make / Model" required=""/>
+</label>
+<label class="field" style="grid-column:1 / -1;">
+<span class="field__label">Notes (optional)</span>
+<textarea id="notes" name="notes" placeholder="Anything we should know (condition, access, etc.)" rows="4"></textarea>
+</label>
+</div><div class="box box--note" style="margin-top:14px;"><div class="kicker" style="margin-bottom:10px;">Add-ons (optional)</div><p class="muted" style="margin:0 0 10px; line-height:1.6;">Select any fixed-price add-ons. Final price may change if we recommend extra time/work after inspection.</p><div class="addonPick" id="addonsList"></div><div class="price" style="margin-top:12px;"><div class="price__row"><span>Package</span><strong id="sumPackage">$0.00</strong></div><div class="price__row"><span>Add-ons</span><strong id="sumAddons">$0.00</strong></div><div class="price__row"><span>Fees</span><strong id="sumFees">$0.00</strong></div><div class="price__row"><span>HST (13%)</span><strong id="sumTax">$0.00</strong></div><div class="price__row"><span>Total estimate</span><strong id="sumTotal">$0.00</strong></div></div></div>
+<div class="form__row" style="margin-top:12px;">
+<button class="btn btn--primary btn--full" id="submitBtn" type="submit">Send booking request</button>
+</div>
+<div class="form__hint muted" style="margin-top:10px;">
+                  Submitting creates a 45-minute soft-hold. If we don’t approve in time, it automatically frees up.
+                </div>
+<div class="notice" id="notice" style="display:none; margin-top:12px;"></div>
+</form>
+</div>
+</div>
+<div class="cta__right">
+<div class="form">
+<div class="form__title">How approval works</div>
+<div class="form__hint">
+                You submit → we get an email → we click Approve/Reject → you get an email back.
+              </div>
+<div class="steps">
+<div class="step"><span class="dot dot--blue"></span><strong>Pending hold:</strong> the requested slot is held for 45 minutes.</div>
+<div class="step"><span class="dot dot--red"></span><strong>Approve:</strong> locks the time on the site + sends you a confirmation email.</div>
+<div class="step"><span class="dot dot--blue"></span><strong>Reject:</strong> frees the slot instantly + sends you a rejection email.</div>
+</div>
+<div class="divider"></div>
+<div class="form__title">Prefer DM?</div>
+<div class="form__hint">You can still book by Instagram / SMS from the contact page.</div>
+<a class="btn btn--ghost btn--full" href="contact.html">Open Contact Options</a>
+</div>
+</div>
+</div>
+<footer class="footer">
+<a aria-label="Home" class="footerBrand" href="index.html">
+<img alt="Detail’N Co. logo" class="footerBrand__logo" onerror="this.style.display='none'" src="assets/logo.png"/>
+<div class="footerBrand__stack">
+<div class="footerBrand__name">DETAIL’N CO.</div>
+<div class="footerBrand__tag">Mobile Auto Detailing</div>
+</div>
+</a>
+<div class="footerLinks">
+<a href="packages.html">Packages</a>
+<a href="addons.html">Add-ons</a>
+<a href="payments.html">Payments</a>
+<a href="service-area.html">Service Area</a>
+<a href="testimonials.html">Reviews</a>
+<a href="booking.html">Book</a>
+<a href="contact.html">Contact</a>
+</div>
+</footer>
+</div>
+</section>
+</main>
+<script src="app.js"></script>
+<script src="booking.js"></script>
+</body>
+</html>
