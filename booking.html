@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#070a10" />
+  <title>Booking — Detail’N Co.</title>
+  <meta name="description" content="Request a mobile detailing booking. Choose a date, time, and estimated duration. Requests are approved by email." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="bg bg--dither" aria-hidden="true"></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="index.html" aria-label="Home">
+        <img class="brand__logo" src="assets/logo.png" alt="Detail’N Co. logo" onerror="this.style.display='none'">
+        <div class="brand__stack">
+          <div class="brand__name">DETAIL’N CO.</div>
+          <div class="brand__tag">Mobile Auto Detailing</div>
+        </div>
+      </a>
+
+      <nav class="nav__links" aria-label="Primary">
+        <a href="packages.html">Packages</a>
+        <a href="addons.html">Add-ons</a>
+        <a href="payments.html">Payments</a>
+        <a href="service-area.html">Service Area</a>
+        <a href="testimonials.html">Reviews</a>
+        <a href="booking.html" aria-current="page">Book</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="nav__mobile" id="navMobile" aria-hidden="true">
+      <a href="packages.html">Packages</a>
+      <a href="addons.html">Add-ons</a>
+      <a href="payments.html">Payments</a>
+      <a href="service-area.html">Service Area</a>
+      <a href="testimonials.html">Reviews</a>
+      <a href="booking.html" aria-current="page">Book</a>
+      <a href="contact.html">Contact</a>
+      <a class="btn btn--ghost" href="https://instagram.com/detail.n.co" target="_blank" rel="noreferrer">Instagram</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" style="padding-top:42px;">
+      <div class="container">
+        <div class="head">
+          <div class="kicker">Booking</div>
+          <h2>Request a time — we approve it by email.</h2>
+          <p>
+            Choose a date, a preferred start time, and an estimated duration. Your request will <span class="accent">soft-hold</span> the slot for 45 minutes
+            while we approve/reject it from email. Once approved, you’ll get an automatic confirmation email.
+          </p>
+          <div class="pill" style="margin-top:14px;">
+            <span class="pill__dot" aria-hidden="true"></span>
+            <span><strong>Hours:</strong> Weekdays 4:30pm–10:00pm • Sat/Sun 5:00am–10:00pm</span>
+          </div>
+        </div>
+
+        <div class="cta" style="gap:18px;">
+          <div class="cta__left">
+            <div class="form" id="bookingCard">
+              <div class="form__title">Booking Request</div>
+              <div class="form__hint">Pick a date + duration first — then choose a start time from what’s available.</div>
+
+              <form id="bookingForm" novalidate>
+                <div class="formGrid">
+                  <label class="field">
+                    <span class="field__label">Date</span>
+                    <input id="date" name="date" type="date" required />
+                    <span class="field__hint">Local Ottawa time.</span>
+                  </label>
+
+                  <label class="field">
+                    <span class="field__label">Estimated duration</span>
+                    <select id="duration" name="duration" required>
+                      <option value="60">1 hour</option>
+                      <option value="90">1.5 hours</option>
+                      <option value="120" selected>2 hours</option>
+                      <option value="150">2.5 hours</option>
+                      <option value="180">3 hours</option>
+                      <option value="210">3.5 hours</option>
+                      <option value="240">4 hours</option>
+                      <option value="270">4.5 hours</option>
+                      <option value="300">5 hours</option>
+                      <option value="330">5.5 hours</option>
+                      <option value="360">6 hours</option>
+                      <option value="420">7 hours</option>
+                      <option value="480">8 hours</option>
+                    </select>
+                    <span class="field__hint">We’ll confirm scope after you submit.</span>
+                  </label>
+
+                  <label class="field" style="grid-column:1 / -1;">
+                    <span class="field__label">Preferred start time</span>
+                    <select id="startTime" name="startTime" required>
+                      <option value="">Select a date first…</option>
+                    </select>
+                    <span class="field__hint" id="slotHint">Available start times will appear here.</span>
+                  </label>
+
+                  <label class="field">
+                    <span class="field__label">Full name</span>
+                    <input id="name" name="name" autocomplete="name" required placeholder="Your name" />
+                  </label>
+
+                  <label class="field">
+                    <span class="field__label">Email</span>
+                    <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@email.com" />
+                  </label>
+
+                  <label class="field">
+                    <span class="field__label">Phone</span>
+                    <input id="phone" name="phone" autocomplete="tel" placeholder="Optional" />
+                  </label>
+
+                  <label class="field">
+                    <span class="field__label">Postal code / area</span>
+                    <input id="location" name="location" required placeholder="K2K / Kanata / Ottawa…" />
+                  </label>
+
+                  <label class="field" style="grid-column:1 / -1;">
+                    <span class="field__label">Vehicle</span>
+                    <input id="vehicle" name="vehicle" required placeholder="Year / Make / Model" />
+                  </label>
+
+                  <label class="field">
+                    <span class="field__label">Vehicle size</span>
+                    <select id="vehicleSize" name="vehicleSize" required>
+                      <option value="small">Small</option>
+                      <option value="medium" selected>Medium</option>
+                      <option value="large">Large</option>
+                    </select>
+                  </label>
+
+                  <label class="field">
+                    <span class="field__label">Preferred package</span>
+                    <select id="package" name="package" required>
+                      <option value="Select">Select</option>
+                      <option value="Signature" selected>Signature</option>
+                      <option value="Showroom">Showroom</option>
+                    </select>
+                  </label>
+
+                  <label class="field" style="grid-column:1 / -1;">
+                    <span class="field__label">Add-ons (optional)</span>
+                    <input id="addons" name="addons" placeholder="e.g., pet hair, shampoo, engine bay…" />
+                  </label>
+
+                  <label class="field" style="grid-column:1 / -1;">
+                    <span class="field__label">Notes (optional)</span>
+                    <textarea id="notes" name="notes" rows="4" placeholder="Anything we should know (condition, access, etc.)"></textarea>
+                  </label>
+                </div>
+
+                <div class="form__row" style="margin-top:12px;">
+                  <button class="btn btn--primary btn--full" id="submitBtn" type="submit">Send booking request</button>
+                </div>
+
+                <div class="form__hint muted" style="margin-top:10px;">
+                  Submitting creates a 45-minute soft-hold. If we don’t approve in time, it automatically frees up.
+                </div>
+
+                <div class="notice" id="notice" style="display:none; margin-top:12px;"></div>
+              </form>
+            </div>
+          </div>
+
+          <div class="cta__right">
+            <div class="form">
+              <div class="form__title">How approval works</div>
+              <div class="form__hint">
+                You submit → we get an email → we click Approve/Reject → you get an email back.
+              </div>
+
+              <div class="steps">
+                <div class="step"><span class="dot dot--blue"></span><strong>Pending hold:</strong> the requested slot is held for 45 minutes.</div>
+                <div class="step"><span class="dot dot--red"></span><strong>Approve:</strong> locks the time on the site + sends you a confirmation email.</div>
+                <div class="step"><span class="dot dot--blue"></span><strong>Reject:</strong> frees the slot instantly + sends you a rejection email.</div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="form__title">Prefer DM?</div>
+              <div class="form__hint">You can still book by Instagram / SMS from the contact page.</div>
+              <a class="btn btn--ghost btn--full" href="contact.html">Open Contact Options</a>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <a class="footerBrand" href="index.html" aria-label="Home">
+            <img class="footerBrand__logo" src="assets/logo.png" alt="Detail’N Co. logo" onerror="this.style.display='none'">
+            <div class="footerBrand__stack">
+              <div class="footerBrand__name">DETAIL’N CO.</div>
+              <div class="footerBrand__tag">Mobile Auto Detailing</div>
+            </div>
+          </a>
+
+          <div class="footerLinks">
+            <a href="packages.html">Packages</a>
+            <a href="addons.html">Add-ons</a>
+            <a href="payments.html">Payments</a>
+            <a href="service-area.html">Service Area</a>
+            <a href="testimonials.html">Reviews</a>
+            <a href="booking.html">Book</a>
+            <a href="contact.html">Contact</a>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+  <script src="booking.js"></script>
+</body>
+</html>
