@@ -1243,3 +1243,38 @@ textarea{
 }
 
 
+/* ===================== Service Area: Mobile map + notice clipping fixes ===================== */
+
+/* Fix flex clipping in notice blocks (text getting cut on mobile) */
+.notice { align-items: stretch; }
+.notice__text { flex: 1 1 auto; min-width: 0; } /* min-width:0 is the key flex wrap fix */
+.notice__text strong { white-space: normal; }   /* allow strong text to wrap */
+
+/* Responsive map wrapper (prevents iframe cropping on mobile) */
+.mapWrap{
+  margin-top: 16px;
+  width: 100%;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.10);
+  overflow: hidden;            /* keeps rounded corners clean */
+  background: rgba(0,0,0,.18);
+}
+
+/* Default map size */
+.mapWrap iframe{
+  display: block;
+  width: 100%;
+  height: 340px;               /* desktop/tablet height */
+  border: 0;
+}
+
+/* Mobile: a bit shorter so it doesn't feel huge */
+@media (max-width: 900px){
+  .mapWrap iframe{ height: 280px; }
+}
+
+/* Extra-small phones: keep it visible but not massive */
+@media (max-width: 420px){
+  .mapWrap iframe{ height: 240px; }
+}
+
