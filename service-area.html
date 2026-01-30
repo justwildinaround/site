@@ -127,8 +127,27 @@
   </main>
 
   <script src="app.js"></script>
+
+<script>
+  (function () {
+    const frame = document.querySelector('#serviceMap .mapFrame');
+    const overlay = document.querySelector('#serviceMap .mapOverlay');
+    if (!frame || !overlay) return;
+
+    overlay.addEventListener('click', () => {
+      frame.classList.remove('is-locked');
+    });
+
+    document.addEventListener('click', (e) => {
+      const inside = e.target.closest('#serviceMap');
+      if (!inside) frame.classList.add('is-locked');
+    }, { passive: true });
+  })();
+</script>
+
 </body>
 </html>
+
 
 
 
