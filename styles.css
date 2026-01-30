@@ -1063,6 +1063,55 @@ textarea{
     padding:6px 10px;
   }
 
+.mapCard {
+  width: 100%;
+}
+
+.mapFrame {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  height: 420px;
+}
+
+@media (max-width: 640px) {
+  .mapFrame {
+    height: 280px;
+  }
+}
+
+.mapFrame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.mapFrame.is-locked iframe {
+  pointer-events: none;
+}
+
+.mapOverlay {
+  position: absolute;
+  inset: auto 12px 12px 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(10,12,18,0.72);
+  color: rgba(255,255,255,0.92);
+  font-size: 14px;
+  backdrop-filter: blur(10px);
+}
+
+.mapFrame:not(.is-locked) .mapOverlay {
+  display: none;
+}
+
+   
   /* Footer: prevent “vertical letters” */
   .footer{ overflow:hidden; padding-bottom:26px; }
   .footer a, .footer p, .footer span, .footer li{
@@ -1192,4 +1241,5 @@ textarea{
     top: 62% !important;
   }
 }
+
 
