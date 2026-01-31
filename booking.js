@@ -408,4 +408,5 @@ const toMs = (dateStr, hhmm) => {
   renderAddons();
   updateSummary();
   loadAvailability();
-})();
+});
+
