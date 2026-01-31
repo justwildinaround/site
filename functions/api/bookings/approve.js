@@ -8,14 +8,14 @@ const makeToken = () => {
 
 
 export async function onRequestGet({ request, env }) {
-  if (!env.DB) return html(approvalPage({ title: "Server not configured", body: "Missing DB binding.", ok: false }), { status: 500 });
+  if (!env.BOOKINGS_DB) return html(approvalPage({ title: "Server not configured", body: "Missing DB binding.", ok: false }), { status: 500 });
 
   const url = new URL(request.url);
   const token = safeText(url.searchParams.get("token"), 200);
   if (!token) return html(approvalPage({ title: "Invalid link", body: "Missing token.", ok: false }), { status: 400 });
 
   const now = nowMs();
-  const booking = await env.DB.prepare(
+  const booking = await env.BOOKINGS_DB.prepare(
     `SELECT * FROM bookings WHERE approve_token = ? LIMIT 1`
   ).bind(token).first();
 
@@ -28,7 +28,7 @@ export async function onRequestGet({ request, env }) {
   }
 
   if (booking.expires_at_ms && booking.expires_at_ms <= now) {
-    await env.DB.prepare(
+    await env.BOOKINGS_DB.prepare(
       `UPDATE bookings SET status='expired', approve_token=NULL, reject_token=NULL, updated_at_ms=? WHERE id=?`
     ).bind(payToken, now, booking.id).run();
 
@@ -40,7 +40,7 @@ export async function onRequestGet({ request, env }) {
   }
 
   // Re-check overlap with existing APPROVED bookings (race safety).
-  const overlap = await env.DB.prepare(
+  const overlap = await env..prepare(
     `SELECT id FROM bookings
      WHERE date = ?
        AND status = 'approved'
@@ -50,7 +50,7 @@ export async function onRequestGet({ request, env }) {
   ).bind(booking.date, booking.id, booking.start_ms, booking.end_ms).first();
 
   if (overlap) {
-    await env.DB.prepare(
+    await env..prepare(
       `UPDATE bookings SET status='rejected', approve_token=NULL, reject_token=NULL, updated_at_ms=? WHERE id=?`
     ).bind(now, booking.id).run();
 
@@ -78,7 +78,7 @@ export async function onRequestGet({ request, env }) {
 
     const payToken = makeToken();
 
-  await env.DB.prepare(
+  await env.BOOKINGS_DB.prepare(
     `UPDATE bookings SET status='approved', approve_token=NULL, reject_token=NULL, pay_token=?, updated_at_ms=? WHERE id=?`
   ).bind(now, booking.id).run();
 
