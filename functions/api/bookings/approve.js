@@ -40,7 +40,9 @@ export async function onRequestGet({ request, env }) {
   }
 
   // Re-check overlap with existing APPROVED bookings (race safety).
-  const overlap = await env..prepare(
+  const db = env.BOOKINGS_DB;
+
+const overlap = await db.prepare(
     `SELECT id FROM bookings
      WHERE date = ?
        AND status = 'approved'
