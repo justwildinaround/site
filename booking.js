@@ -37,15 +37,15 @@
 
   const PACKAGES = {
     refresh: {
-      label: "Refresh & Shine",
+      label: "Select Series",
       prices: { small: 89.99, medium: 109.99, large: 124.99 },
     },
     signature: {
-      label: "Signature",
+      label: "Signature Series",
       prices: { small: 134.99, medium: 164.99, large: 182.99 },
     },
     showroom: {
-      label: "Showroom",
+      label: "Showroom Series",
       prices: { small: 249.99, medium: 299.99, large: 339.99 },
     },
   };
