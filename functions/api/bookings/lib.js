@@ -51,7 +51,7 @@ export const sendEmailMailChannels = async (env, message) => {
   // To improve deliverability, set:
   //   MAIL_FROM = "bookings@yourdomain.com"
   // and configure SPF/DKIM as recommended by your domain provider.
-  const from = env.MAIL_FROM || "bookings@detailnco.example";
+  const from = env.MAIL_FROM || "bookings@detailnco.com";
   const payload = {
     personalizations: [
       {
