@@ -47,24 +47,42 @@ export const getBaseUrl = (request, env) => {
 };
 
 export const sendEmailMailChannels = async (env, message) => {
-  // Uses MailChannels (works on Cloudflare Workers/Pages).
-  // To improve deliverability, set:
-  //   MAIL_FROM = "bookings@yourdomain.com"
-  // and configure SPF/DKIM as recommended by your domain provider.
-  const from = env.MAIL_FROM || "bookings@detailnco.com";
+  // MailChannels Email API for Cloudflare Workers/Pages (no API key required).
+  // Must be called from a Cloudflare Worker/Pages Function (not from local node).
+
+  const fromEmail = (env.MAIL_FROM || "bookings@detailnco.com").trim();
+  const fromName = (message.fromName || "Detail’N Co. Booking").trim();
+
   const payload = {
+    from: { email: fromEmail, name: fromName },
     personalizations: [
       {
-        to: message.to.map((email) => ({ email }))
+        to: (message.to || []).map((email) => ({ email }))
       }
     ],
-    from: { email: from, name: message.fromName || "Detail’N Co. Booking" },
-    subject: message.subject,
+    subject: message.subject || "",
     content: [
       { type: "text/plain", value: message.text || "" },
       ...(message.html ? [{ type: "text/html", value: message.html }] : [])
     ]
   };
+
+  const res = await fetch("https://api.mailchannels.net/tx/v1/send", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "user-agent": "cloudflare-pages-functions"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const body = await res.text().catch(() => "");
+
+  if (!res.ok) {
+    throw new Error(`MailChannels send failed: ${res.status} ${body}`);
+  }
+};
+
 
   const res = await fetch("https://api.mailchannels.net/tx/v1/send", {
     method: "POST",
