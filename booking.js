@@ -214,6 +214,26 @@
   const loadAvailability = async () => {
   clearNotice();
 
+// Set default date (tomorrow)
+const initDefaultDate = () => {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+
+  dateEl.value = `${yyyy}-${mm}-${dd}`;
+};
+
+// Convert date + time to ms
+const toMs = (dateStr, hhmm) => {
+  const [h, m] = hhmm.split(":").map((x) => parseInt(x, 10));
+  const [yyyy, mm, dd] = dateStr.split("-").map((x) => parseInt(x, 10));
+
+  return new Date(yyyy, mm - 1, dd, h, m, 0, 0).getTime();
+};
+    
   const date = dateEl.value;
   if (!date) {
     startTimeEl.innerHTML = `<option value="">Select a date first…</option>`;
