@@ -86,8 +86,8 @@ export const formatBusinessHoursNote = (dateStr) => {
   const day = d.getDay(); // 0 sun .. 6 sat
   const isWeekend = day === 0 || day === 6;
   return isWeekend
-    ? "Hours for this day: 5:00am–10:00pm"
-    : "Hours for this day: 4:30pm–10:00pm";
+    ? "Booking Hours for this day: 10:00am–4:00pm"
+    : "Booking Hours for this day: 4:30pm–7:00pm";
 };
 
 export const makeEmailHtml = ({ title, lines, ctaPrimary, ctaSecondary }) => {
