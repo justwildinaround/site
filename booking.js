@@ -22,7 +22,13 @@
 
   // Customer does NOT choose duration. We use a conservative default purely for the soft-hold + availability display.
   // You can change this later if you want "holds" to assume a longer window.
-  const DEFAULT_HOLD_DURATION_MIN = 360;
+  function getHoldDurationForDate(dateStr) {
+  const d = new Date(dateStr + "T12:00:00"); // safe local parse
+  const day = d.getDay(); // 0=Sun, 6=Sat
+
+  const isWeekend = (day === 0 || day === 6);
+  return isWeekend ? 360 : 330; // weekend 6h, weekday 5.5h
+}
 
   // Pricing knobs
   const HST_RATE = 0.13;
@@ -302,16 +308,18 @@
     }
 
     const startMs = toMs(date, startTime);
-    const endMs = startMs + DEFAULT_HOLD_DURATION_MIN * 60_000;
+    const endMs = startMs + DEFAULT_HOLD_DURATION_MIN * 60_000 * 1000;
 
     submitBtn.disabled = true;
     submitBtn.textContent = "Submitting…";
 
     try {
+      const durationMin = getHoldDurationForDate(date);
+      
       const payload = {
         date,
         startTime,
-        durationMin: DEFAULT_HOLD_DURATION_MIN,
+        durationMin,
         startMs,
         endMs,
         customer: { name, email, phone },
