@@ -27,7 +27,7 @@
   const d = new Date(dateStr + "T12:00:00"); // safe local parse
   const day = d.getDay(); // 0=Sun, 6=Sat
   const isWeekend = (day === 0 || day === 6);
-  return isWeekend ? 360 : 180; // weekend 6h, weekday 5.5h
+  return isWeekend ? 360 : 180; // weekend 6h, weekday 3h
 }
 
   // Pricing knobs
