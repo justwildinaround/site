@@ -139,30 +139,50 @@ if (endMin > closeMin) {
   });
 
   const textEmail = [
-    "New booking request (pending hold).",
-    `Date: ${date}`,
-    `Requested start time: ${startTime} (duration discussed after review)`,
-    `Customer: ${name} (${email}${phone ? ` • ${phone}` : ""})`,
-    `Location: ${location}`,
-    `Vehicle: ${vehicle} (${vehicleSize || "n/a"})`,
-    `Package: ${pkg || "n/a"}`,
-    (total > 0 ? `Estimate: $${total.toFixed(2)} ${currency} (package $${packagePrice.toFixed(2)} + add-ons $${addonsTotal.toFixed(2)} + fees $${fees.toFixed(2)} + HST $${tax.toFixed(2)})` : ""),
-    addons ? `Add-ons: ${addons}` : "",
-    notesWithPricing ? `Notes: ${notesWithPricing}` : "",
-    "",
-    `Approve: ${approveUrl}`,
-    `Reject: ${rejectUrl}`,
-    `Ref: ${bookingId}`
-  ].filter(Boolean).join("\n");
+  "New booking request (pending hold).",
+  `Date: ${date}`,
+  `Requested start time: ${startTime} (duration discussed after review)`,
+  `Customer: ${name} (${email}${phone ? ` • ${phone}` : ""})`,
+  `Location: ${location}`,
+  `Vehicle: ${vehicle} (${vehicleSize || "n/a"})`,
+  `Package: ${pkg || "n/a"}`,
+  (total > 0 ? `Estimate: $${total.toFixed(2)} ${currency} (package $${packagePrice.toFixed(2)} + add-ons $${addonsTotal.toFixed(2)} + fees $${fees.toFixed(2)} + HST $${tax.toFixed(2)})` : ""),
+  addons ? `Add-ons: ${addons}` : "",
+  notesWithPricing ? `Notes: ${notesWithPricing}` : "",
+  "",
+  `Approve: ${approveUrl}`,
+  `Reject: ${rejectUrl}`,
+  `Ref: ${bookingId}`
+].filter(Boolean).join("\n");
 
-  } catch (e) {
-  const msg = (e && e.message) ? String(e.message) : "Unknown MailChannels error";
-  return json({
-    bookingId,
-    warning: "Booking created, but email delivery failed.",
-    mailchannelsError: msg
-  }, { status: 201 });
+// --- EMAIL SEND (safe) ---
+let mailchannelsError = "";
+
+try {
+  await sendEmailMailChannels(env, {
+    to: [businessEmail],
+    subject: `Booking request pending approval — ${date} ${startTime}`,
+    text: textEmail,
+    html: htmlEmail,
+    fromName: "Detail’N Co."
+  });
+} catch (e) {
+  mailchannelsError = (e && e.message) ? String(e.message) : "Unknown MailChannels error";
 }
+
+if (mailchannelsError) {
+  return json(
+    {
+      bookingId,
+      warning: "Booking created, but email delivery failed.",
+      mailchannelsError
+    },
+    { status: 201 }
+  );
+}
+
+return json({ bookingId }, { status: 201 });
+
 
 
   return json({ bookingId }, { status: 201 });
