@@ -1,7 +1,7 @@
 import { json, nowMs, randomToken, safeText, clampInt, getBaseUrl, sendEmailMailChannels, makeEmailHtml, formatBusinessHoursNote } from "./lib.js";
 
 export async function onRequestPost({ request, env }) {
-  if (!env.DB) return json({ error: "Server not configured: missing D1 binding DB." }, { status: 500 });
+  if (!env.BOOKINGS_DB) return json({ error: "Server not configured: missing D1 binding DB." }, { status: 500 });
 
   let body;
   try {
@@ -52,7 +52,7 @@ export async function onRequestPost({ request, env }) {
   const rejectToken = randomToken(32);
 
   // Block if overlaps with any approved booking or non-expired pending hold on the same date.
-  const overlap = await env.DB.prepare(
+  const overlap = await env.BOOKINGS_DB.prepare(
     `SELECT id, status FROM bookings
      WHERE date = ?
        AND status IN ('approved','pending')
@@ -65,7 +65,7 @@ export async function onRequestPost({ request, env }) {
     return json({ error: "That time overlaps an existing booking/hold. Please pick another start time." }, { status: 409 });
   }
 
-  const insert = await env.DB.prepare(
+  const insert = await env.BOOKINGS_DB.prepare(
     `INSERT INTO bookings
      (date, start_time, duration_min, start_ms, end_ms, status, expires_at_ms,
       customer_name, customer_email, customer_phone,
