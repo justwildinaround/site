@@ -21,7 +21,7 @@ const getHoursForDate = (dateStr) => {
 };
 
 export async function onRequestGet({ request, env }) {
-  if (!env.DB) return json({ error: "Server not configured: missing D1 binding DB." }, { status: 500 });
+  if (!env.BOOKINGS_DB) return json({ error: "Server not configured: missing D1 binding DB." }, { status: 500 });
 
   const url = new URL(request.url);
   const date = safeText(url.searchParams.get("date"), 20);
@@ -34,7 +34,7 @@ export async function onRequestGet({ request, env }) {
 
   // Fetch blocks for the date
   const now = Date.now();
-  const rows = await env.DB.prepare(
+  const rows = await env.BOOKINGS_DB.prepare(
     `SELECT start_time, duration_min, start_ms, end_ms, status, expires_at_ms
      FROM bookings
      WHERE date = ?
