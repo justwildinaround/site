@@ -3,6 +3,7 @@
 
   const el = (id) => document.getElementById(id);
 
+  
   const dateEl = el("date");
   const startTimeEl = el("startTime");
   const slotHintEl = el("slotHint");
@@ -211,69 +212,47 @@
   };
 
   const loadAvailability = async () => {
-    clearNotice();
+  clearNotice();
 
-    const date = dateEl.value;
-    if (!date) {
-      startTimeEl.innerHTML = `<option value="">Select a date first…</option>`;
-      slotHintEl.textContent = "Available start times will appear here.";
-      return;
-    }
+  const date = dateEl.value;
+  if (!date) {
+    startTimeEl.innerHTML = `<option value="">Select a date first…</option>`;
+    slotHintEl.textContent = "Available start times will appear here.";
+    return;
+  }
 
-    startTimeEl.innerHTML = `<option value="">Loading…</option>`;
-    slotHintEl.textContent = "Checking availability…";
+  startTimeEl.innerHTML = `<option value="">Loading…</option>`;
+  slotHintEl.textContent = "Checking availability…";
 
+  try {
+    const durationMin = getHoldDurationForDate(date);
+    const url = `${API_BASE}/availability?date=${encodeURIComponent(date)}&duration=${durationMin}`;
+    const res = await fetch(url, { headers: { "Accept": "application/json" } });
+
+    const text = await res.text();
+    let data;
     try {
-      // We pass a conservative default duration only to compute overlaps.
-      const durationMin = getHoldDurationForDate(date);
-      const url = `${API_BASE}/availability?date=${encodeURIComponent(date)}&duration=${durationMin}`;
-      const res = await fetch(url, { headers: { "Accept": "application/json" } });
-
-      const text = await res.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch {
-        // likely HTML 404 if you're on GitHub Pages, or functions not deployed
-        throw new Error("Non-JSON response");
-      }
-
-      if (!res.ok) {
-        throw new Error(data?.error || "Failed to load availability.");
-      }
-
-      populateStartTimes(data.slots, data.note);
-    } catch (e) {
-      startTimeEl.innerHTML = `<option value="">Unavailable</option>`;
-      slotHintEl.textContent = "Network error loading availability. Try again.";
-
-      // Helpful hint for deployment issues
-      setNotice(
-        "warn",
-        `Couldn’t load availability. If you’re previewing on <strong>GitHub Pages</strong>, the <code>/api</code> endpoints won’t work. Test on your <strong>Cloudflare Pages</strong> URL/domain.`
-      );
-      console.error(e);
+      data = JSON.parse(text);
+    } catch {
+      throw new Error("Non-JSON response");
     }
-  };
 
-  const toMs = (dateStr, hhmm) => {
-    // Treat inputs as local time (Ottawa). The server stores ms as a number; it's used consistently for overlap checks.
-    // This uses the browser's local timezone; deploy/usage is expected in Ottawa.
-    const [h, m] = hhmm.split(":").map((x) => parseInt(x, 10));
-    const [yyyy, mm, dd] = dateStr.split("-").map((x) => parseInt(x, 10));
-    const d = new Date(yyyy, mm - 1, dd, h, m, 0, 0);
-    return d.getTime();
-  };
+    if (!res.ok) {
+      throw new Error(data?.error || "Failed to load availability.");
+    }
 
-  const initDefaultDate = () => {
-    // default to tomorrow
-    const d = new Date();
-    d.setDate(d.getDate() + 1);
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const dd = String(d.getDate()).padStart(2, "0");
-    dateEl.value = `${yyyy}-${mm}-${dd}`;
-  };
+    populateStartTimes(data.slots, data.note);
+  } catch (err) {
+    startTimeEl.innerHTML = `<option value="">Unavailable</option>`;
+    slotHintEl.textContent = "Network error loading availability. Try again.";
+
+    setNotice(
+      "warn",
+      `Couldn’t load availability. If you’re previewing on <strong>GitHub Pages</strong>, the <code>/api</code> endpoints won’t work. Test on your <strong>Cloudflare Pages</strong> URL/domain.`
+    );
+    console.error(err);
+  }
+};
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -374,6 +353,7 @@
   };
 
   // Events
+  formEl.addEventListener("submit", onSubmit);
   dateEl.addEventListener("change", loadAvailability);
   startTimeEl.addEventListener("change", () => {});
   packageEl.addEventListener("change", updateSummary);
