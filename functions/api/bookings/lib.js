@@ -2,28 +2,21 @@
 
 export const json = (obj, init = {}) =>
   new Response(JSON.stringify(obj), {
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      ...(init.headers || {})
-    },
-    status: init.status || 200
+    headers: { "content-type": "application/json; charset=utf-8", ...(init.headers || {}) },
+    status: init.status || 200,
   });
 
 export const html = (content, init = {}) =>
   new Response(content, {
-    headers: {
-      "content-type": "text/html; charset=utf-8",
-      ...(init.headers || {})
-    },
-    status: init.status || 200
+    headers: { "content-type": "text/html; charset=utf-8", ...(init.headers || {}) },
+    status: init.status || 200,
   });
 
 export const nowMs = () => Date.now();
 
 export const base64url = (bytes) => {
   const bin = String.fromCharCode(...bytes);
-  const b64 = btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-  return b64;
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 };
 
 export const randomToken = (len = 32) => {
@@ -45,65 +38,23 @@ export const clampInt = (v, min, max) => {
 };
 
 export const getBaseUrl = (request, env) => {
-  // Prefer explicit PUBLIC_BASE_URL so email links work even on preview branches.
   const explicit = env.PUBLIC_BASE_URL && String(env.PUBLIC_BASE_URL).trim();
   if (explicit) return explicit.replace(/\/+$/g, "");
   const u = new URL(request.url);
   return `${u.protocol}//${u.host}`;
 };
 
-/**
- * MailChannels Email API for Cloudflare Workers/Pages
- * - No API key required
- * - Will fail if you try to call from local Node (works only inside CF runtime)
- */
-export const sendEmailMailChannels = async (env, message) => {
-  const fromEmail = (env.MAIL_FROM || "bookings@detailnco.com").trim();
-  const fromName = (message.fromName || "Detail’N Co. Booking").trim();
-
-  const payload = {
-    from: { email: fromEmail, name: fromName },
-    personalizations: [
-      {
-        to: (message.to || []).map((email) => ({ email }))
-      }
-    ],
-    subject: message.subject || "",
-    content: [
-      { type: "text/plain", value: message.text || "" },
-      ...(message.html ? [{ type: "text/html", value: message.html }] : [])
-    ]
-  };
-
-  const res = await fetch("https://api.mailchannels.net/tx/v1/send", {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "user-agent": "cloudflare-pages-functions"
-    },
-    body: JSON.stringify(payload)
-  });
-
-  const body = await res.text().catch(() => "");
-  if (!res.ok) {
-    throw new Error(`MailChannels send failed: ${res.status} ${body}`);
-  }
-};
-
-export const fmtMoney = (s) => safeText(s, 80);
-
+// ---------- BUSINESS HOURS NOTE (matches your weekend/weekday rules) ----------
 export const formatBusinessHoursNote = (dateStr) => {
-  // dateStr: YYYY-MM-DD in local time
   const d = new Date(`${dateStr}T12:00:00`);
   const day = d.getDay(); // 0 sun .. 6 sat
   const isWeekend = day === 0 || day === 6;
-
-  // UPDATE THESE STRINGS IF YOU CHANGE HOURS:
   return isWeekend
     ? "Booking Hours for this day: 10:00am–10:00pm"
     : "Booking Hours for this day: 4:30pm–10:00pm";
 };
 
+// ---------- EMAIL HTML ----------
 export const makeEmailHtml = ({ title, lines, ctaPrimary, ctaSecondary }) => {
   const lineHtml = (lines || [])
     .map((l) => `<div style="margin:0 0 10px;line-height:1.5;color:#101828;">${l}</div>`)
@@ -155,4 +106,36 @@ export const approvalPage = ({ title, body, ok }) => {
   </div>
 </body>
 </html>`;
+};
+
+// ---------- EMAIL SENDER (Resend) ----------
+export const sendEmail = async (env, message) => {
+  const apiKey = (env.RESEND_API_KEY || "").trim();
+  if (!apiKey) throw new Error("Missing RESEND_API_KEY env var.");
+
+  const fromEmail = (env.MAIL_FROM || "").trim();
+  if (!fromEmail) throw new Error("Missing MAIL_FROM env var (must be a verified sender in Resend).");
+
+  const to = (message.to || []).map((email) => ({ email }));
+  if (!to.length) throw new Error("No recipients provided.");
+
+  const payload = {
+    from: `${message.fromName || "Detail’N Co."} <${fromEmail}>`,
+    to: (message.to || []),
+    subject: message.subject || "",
+    text: message.text || "",
+    html: message.html || undefined,
+  };
+
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const body = await res.text().catch(() => "");
+  if (!res.ok) throw new Error(`Resend send failed: ${res.status} ${body}`);
 };
