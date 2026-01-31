@@ -1,14 +1,14 @@
 import { html, nowMs, safeText, sendEmailMailChannels, makeEmailHtml, approvalPage } from "./lib.js";
 
 export async function onRequestGet({ request, env }) {
-  if (!env.DB) return html(approvalPage({ title: "Server not configured", body: "Missing DB binding.", ok: false }), { status: 500 });
+  if (!env.BOOKINGS_DB) return html(approvalPage({ title: "Server not configured", body: "Missing DB binding.", ok: false }), { status: 500 });
 
   const url = new URL(request.url);
   const token = safeText(url.searchParams.get("token"), 200);
   if (!token) return html(approvalPage({ title: "Invalid link", body: "Missing token.", ok: false }), { status: 400 });
 
   const now = nowMs();
-  const booking = await env.DB.prepare(
+  const booking = await env.BOOKINGS_DB.prepare(
     `SELECT * FROM bookings WHERE reject_token = ? LIMIT 1`
   ).bind(token).first();
 
@@ -20,7 +20,7 @@ export async function onRequestGet({ request, env }) {
     return html(approvalPage({ title: "Already handled", body: `This request is already <strong>${booking.status}</strong>.`, ok: booking.status === "approved" }), { status: 200 });
   }
 
-  await env.DB.prepare(
+  await env.BOOKINGS_DB.prepare(
     `UPDATE bookings SET status='rejected', approve_token=NULL, reject_token=NULL, updated_at_ms=? WHERE id=?`
   ).bind(now, booking.id).run();
 
