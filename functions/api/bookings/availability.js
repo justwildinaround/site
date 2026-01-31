@@ -15,10 +15,13 @@ const getHoursForDate = (dateStr) => {
   const d = new Date(`${dateStr}T12:00:00`);
   const day = d.getDay(); // 0 Sun .. 6 Sat
   const isWeekend = day === 0 || day === 6;
-  const openMin = isWeekend ? (5 * 60) : (16 * 60 + 30);
-  const closeMin = 22 * 60;
+
+  const openMin = isWeekend ? (10 * 60) : (16 * 60 + 30); // weekend 10:00
+  const closeMin = 22 * 60; // 22:00
+
   return { openMin, closeMin, isWeekend };
 };
+
 
 export async function onRequestGet({ request, env }) {
   if (!env.BOOKINGS_DB) return json({ error: "Server not configured: missing D1 binding BOOKINGS_DB." }, { status: 500 });
