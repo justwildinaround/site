@@ -1,5 +1,22 @@
 import { json, nowMs, randomToken, safeText, clampInt, getBaseUrl, sendEmailMailChannels, makeEmailHtml, formatBusinessHoursNote } from "./lib.js";
 
+const hhmmToMinutes = (hhmm) => {
+  const [h, m] = hhmm.split(":").map((x) => parseInt(x, 10));
+  return h * 60 + m;
+};
+
+const getHoursForDate = (dateStr) => {
+  const d = new Date(`${dateStr}T12:00:00`);
+  const day = d.getDay(); // 0 Sun .. 6 Sat
+  const isWeekend = day === 0 || day === 6;
+
+  const openMin = isWeekend ? (10 * 60) : (16 * 60 + 30); // weekend 10:00, weekday 16:30
+  const closeMin = 22 * 60; // 22:00
+
+  return { openMin, closeMin, isWeekend };
+};
+
+
 export async function onRequestPost({ request, env }) {
   if (!env.BOOKINGS_DB) return json({ error: "Server not configured: missing D1 binding BOOKINGS_DB." }, { status: 500 });
 
@@ -45,6 +62,18 @@ export async function onRequestPost({ request, env }) {
   if (!/^\d{2}:\d{2}$/.test(startTime)) return json({ error: "Invalid start time." }, { status: 400 });
   if (!durationMin || !startMs || !endMs || endMs <= startMs) return json({ error: "Invalid duration/timestamps." }, { status: 400 });
   if (!name || !email || !location || !vehicle) return json({ error: "Missing required fields." }, { status: 400 });
+  // Enforce business hours (prevents out-of-hours POSTs)
+const { openMin, closeMin } = getHoursForDate(date);
+const startMin = hhmmToMinutes(startTime);
+const endMin = startMin + durationMin;
+
+// Must start within hours, and must not extend past close time
+if (startMin < openMin || startMin > closeMin - 30) {
+  return json({ error: "Start time is outside business hours." }, { status: 400 });
+}
+if (endMin > closeMin) {
+  return json({ error: "That start time doesn't fit within business hours." }, { status: 400 });
+}
 
   const createdAt = nowMs();
   const expiresAt = createdAt + 45 * 60_000; // 45-minute soft hold
