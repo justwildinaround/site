@@ -155,21 +155,15 @@ if (endMin > closeMin) {
     `Ref: ${bookingId}`
   ].filter(Boolean).join("\n");
 
-  try {
-    await sendEmailMailChannels(env, {
-      to: [businessEmail],
-      subject: `Booking request pending approval — ${date} ${startTime}`,
-      text: textEmail,
-      html: htmlEmail,
-      fromName: "Detail’N Co."
-    });
   } catch (e) {
-    // Keep the booking; return success but warn.
-    return json({
-      bookingId,
-      warning: "Booking created, but email delivery failed. Check MailChannels/domain settings."
-    }, { status: 201 });
-  }
+  const msg = (e && e.message) ? String(e.message) : "Unknown MailChannels error";
+  return json({
+    bookingId,
+    warning: "Booking created, but email delivery failed.",
+    mailchannelsError: msg
+  }, { status: 201 });
+}
+
 
   return json({ bookingId }, { status: 201 });
 }
