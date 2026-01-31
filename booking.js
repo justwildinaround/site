@@ -232,7 +232,7 @@ const toMs = (dateStr, hhmm) => {
   const onSubmit = async (e) => {
   const loadAvailability = async () => {
   clearNotice();
-
+    
 // Set default date (tomorrow)
 const initDefaultDate = () => {
   const d = new Date();
@@ -244,6 +244,7 @@ const initDefaultDate = () => {
 
   dateEl.value = `${yyyy}-${mm}-${dd}`;
 };
+
 
 // Convert date + time to ms
 const toMs = (dateStr, hhmm) => {
