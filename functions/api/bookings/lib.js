@@ -46,7 +46,7 @@ export const getBaseUrl = (request, env) => {
   return `${u.protocol}//${u.host}`;
 };
 
-export const sendEmailMailChannels = async (env, message) => {
+  export const sendEmailMailChannels = async (env, message) => {
   // MailChannels Email API for Cloudflare Workers/Pages (no API key required).
   // Must be called from a Cloudflare Worker/Pages Function (not from local node).
 
@@ -82,8 +82,6 @@ export const sendEmailMailChannels = async (env, message) => {
     throw new Error(`MailChannels send failed: ${res.status} ${body}`);
   }
 };
-
-
   const res = await fetch("https://api.mailchannels.net/tx/v1/send", {
     method: "POST",
     headers: { "content-type": "application/json" },
