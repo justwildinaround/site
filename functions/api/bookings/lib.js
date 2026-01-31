@@ -113,6 +113,10 @@ export const sendEmail = async (env, message) => {
   const apiKey = (env.RESEND_API_KEY || "").trim();
   if (!apiKey) throw new Error("Missing RESEND_API_KEY env var.");
 
+  // Backward-compatible alias (older files still import this name)
+export const sendEmailMailChannels = sendEmail;
+
+
   const fromEmail = (env.MAIL_FROM || "").trim();
   if (!fromEmail) throw new Error("Missing MAIL_FROM env var (must be a verified sender in Resend).");
 
