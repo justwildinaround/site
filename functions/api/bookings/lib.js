@@ -2,13 +2,19 @@
 
 export const json = (obj, init = {}) =>
   new Response(JSON.stringify(obj), {
-    headers: { "content-type": "application/json; charset=utf-8", ...(init.headers || {}) },
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      ...(init.headers || {})
+    },
     status: init.status || 200
   });
 
 export const html = (content, init = {}) =>
   new Response(content, {
-    headers: { "content-type": "text/html; charset=utf-8", ...(init.headers || {}) },
+    headers: {
+      "content-type": "text/html; charset=utf-8",
+      ...(init.headers || {})
+    },
     status: init.status || 200
   });
 
@@ -46,10 +52,12 @@ export const getBaseUrl = (request, env) => {
   return `${u.protocol}//${u.host}`;
 };
 
-  export const sendEmailMailChannels = async (env, message) => {
-  // MailChannels Email API for Cloudflare Workers/Pages (no API key required).
-  // Must be called from a Cloudflare Worker/Pages Function (not from local node).
-
+/**
+ * MailChannels Email API for Cloudflare Workers/Pages
+ * - No API key required
+ * - Will fail if you try to call from local Node (works only inside CF runtime)
+ */
+export const sendEmailMailChannels = async (env, message) => {
   const fromEmail = (env.MAIL_FROM || "bookings@detailnco.com").trim();
   const fromName = (message.fromName || "Detail’N Co. Booking").trim();
 
@@ -77,19 +85,7 @@ export const getBaseUrl = (request, env) => {
   });
 
   const body = await res.text().catch(() => "");
-
   if (!res.ok) {
-    throw new Error(`MailChannels send failed: ${res.status} ${body}`);
-  }
-};
-  const res = await fetch("https://api.mailchannels.net/tx/v1/send", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(payload)
-  });
-
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
     throw new Error(`MailChannels send failed: ${res.status} ${body}`);
   }
 };
@@ -101,17 +97,23 @@ export const formatBusinessHoursNote = (dateStr) => {
   const d = new Date(`${dateStr}T12:00:00`);
   const day = d.getDay(); // 0 sun .. 6 sat
   const isWeekend = day === 0 || day === 6;
+
+  // UPDATE THESE STRINGS IF YOU CHANGE HOURS:
   return isWeekend
-    ? "Booking Hours for this day: 10:00am–4:00pm"
-    : "Booking Hours for this day: 4:30pm–7:00pm";
+    ? "Booking Hours for this day: 10:00am–10:00pm"
+    : "Booking Hours for this day: 4:30pm–10:00pm";
 };
 
 export const makeEmailHtml = ({ title, lines, ctaPrimary, ctaSecondary }) => {
-  const lineHtml = lines.map((l) => `<div style="margin:0 0 10px;line-height:1.5;color:#101828;">${l}</div>`).join("");
+  const lineHtml = (lines || [])
+    .map((l) => `<div style="margin:0 0 10px;line-height:1.5;color:#101828;">${l}</div>`)
+    .join("");
+
   const btn = (cta, color) =>
     cta
       ? `<a href="${cta.href}" style="display:inline-block;padding:12px 14px;border-radius:12px;text-decoration:none;font-weight:800;background:${color};color:white;margin-right:10px;">${cta.label}</a>`
       : "";
+
   return `<!doctype html>
 <html>
   <body style="margin:0;padding:0;background:#f6f7fb;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;">
