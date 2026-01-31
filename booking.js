@@ -226,7 +226,8 @@
 
     try {
       // We pass a conservative default duration only to compute overlaps.
-      const url = `${API_BASE}/availability?date=${encodeURIComponent(date)}&duration=${DEFAULT_HOLD_DURATION_MIN}`;
+      const durationMin = getHoldDurationForDate(date);
+      const url = `${API_BASE}/availability?date=${encodeURIComponent(date)}&duration=${durationMin}`;
       const res = await fetch(url, { headers: { "Accept": "application/json" } });
 
       const text = await res.text();
@@ -308,14 +309,14 @@
     }
 
     const startMs = toMs(date, startTime);
-    const endMs = startMs + DEFAULT_HOLD_DURATION_MIN * 60_000 * 1000;
+    const durationMin = getHoldDurationForDate(date);
+    const endMs = startMs + durationMin * 60_000;
+
 
     submitBtn.disabled = true;
     submitBtn.textContent = "Submitting…";
 
     try {
-      const durationMin = getHoldDurationForDate(date);
-      
       const payload = {
         date,
         startTime,
