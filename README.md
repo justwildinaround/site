@@ -16,7 +16,7 @@ This repo now includes a booking page + backend that works like:
 - **Weekdays:** 4:30pm–10:00pm
 - **Saturday/Sunday:** 5:00am–10:00pm
 - Availability grid is in **30-minute** increments, and duration is variable.
-
+ 
 ---
 
 ## Setup (Cloudflare Pages + D1)
