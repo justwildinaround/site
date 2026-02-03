@@ -9,7 +9,7 @@ This repo now includes a booking page + backend that works like:
 1. Customer submits a booking request on `/booking.html`
 2. The requested slot is **soft-held for 45 minutes**
 3. The business receives an email with **Approve** + **Reject** buttons
-4. Clicking a button updates the booking status + emails the customer
+4. Clicking a button updates the booking status + emails the customer 
 5. Approved bookings (and non-expired pending holds) block availability on the site
 
 ### Working hours encoded
