@@ -25,7 +25,7 @@ const getHoursForDate = (dateStr) => {
   const openMin = isWeekend ? (10 * 60) : (16 * 60 + 30);
   const closeMin = 22 * 60;
 
-  return { openMin, closeMin };
+  return { openMin, closeMin, isWeekend };
 };
 
 export async function onRequestPost({ request, env }) {
@@ -56,8 +56,8 @@ export async function onRequestPost({ request, env }) {
   const location = safeText(details.location, 160);
   const vehicle = safeText(details.vehicle, 160);
   const vehicleSize = safeText(details.vehicleSize, 30);
-  const pkg = safeText(details.package, 60);
-  const addons = safeText(details.addons, 300);
+  const pkg = safeText(details.package, 80);
+  const addons = safeText(details.addons, 500);
   const notes = safeText(details.notes, 2000);
 
   const pricing = body.pricing || {};
@@ -91,8 +91,12 @@ export async function onRequestPost({ request, env }) {
 
   const createdAt = nowMs();
   const expiresAt = createdAt + 45 * 60_000; // 45-minute soft hold
+
   const approveToken = randomToken(32);
   const rejectToken = randomToken(32);
+
+  // IMPORTANT: generate pay_token at creation so approve can email customer instantly
+  const payToken = randomToken(32);
 
   // Overlap check
   const overlap = await env.BOOKINGS_DB.prepare(
@@ -108,47 +112,27 @@ export async function onRequestPost({ request, env }) {
     return json({ error: "That time overlaps an existing booking/hold. Please pick another start time." }, { status: 409 });
   }
 
-  // Insert booking
-  // Persist pricing so payments can use it later.
-  let bookingId;
-  try {
-    const insert = await env.BOOKINGS_DB.prepare(
-      `INSERT INTO bookings
-       (date, start_time, duration_min, start_ms, end_ms, status, expires_at_ms,
-        customer_name, customer_email, customer_phone,
-        location, vehicle, vehicle_size, package, addons, notes,
-        total_cad, currency,
-        approve_token, reject_token, created_at_ms, updated_at_ms)
-       VALUES (?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    ).bind(
-      date, startTime, durationMin, startMs, endMs, expiresAt,
-      name, email, phone,
-      location, vehicle, vehicleSize, pkg, addons, notesWithPricing,
-      Number.isFinite(total) ? total : 0,
-      currency,
-      approveToken, rejectToken, createdAt, createdAt
-    ).run();
+  // Insert booking (schema is migrated now)
+  const insert = await env.BOOKINGS_DB.prepare(
+    `INSERT INTO bookings
+     (date, start_time, duration_min, start_ms, end_ms, status, expires_at_ms,
+      customer_name, customer_email, customer_phone,
+      location, vehicle, vehicle_size, package, addons, notes,
+      total_cad, currency,
+      approve_token, reject_token, pay_token,
+      created_at_ms, updated_at_ms)
+     VALUES (?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  ).bind(
+    date, startTime, durationMin, startMs, endMs, expiresAt,
+    name, email, phone,
+    location, vehicle, vehicleSize, pkg, addons, notesWithPricing,
+    Number.isFinite(total) ? total : 0,
+    currency,
+    approveToken, rejectToken, payToken,
+    createdAt, createdAt
+  ).run();
 
-    bookingId = insert.meta?.last_row_id;
-  } catch (e) {
-    // Backward-compatible fallback if the DB schema hasn't been migrated yet.
-    const insert = await env.BOOKINGS_DB.prepare(
-      `INSERT INTO bookings
-       (date, start_time, duration_min, start_ms, end_ms, status, expires_at_ms,
-        customer_name, customer_email, customer_phone,
-        location, vehicle, vehicle_size, package, addons, notes,
-        approve_token, reject_token, created_at_ms, updated_at_ms)
-       VALUES (?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    ).bind(
-      date, startTime, durationMin, startMs, endMs, expiresAt,
-      name, email, phone,
-      location, vehicle, vehicleSize, pkg, addons, notesWithPricing,
-      approveToken, rejectToken, createdAt, createdAt
-    ).run();
-
-    bookingId = insert.meta?.last_row_id;
-  }
-
+  const bookingId = insert.meta?.last_row_id;
   if (!bookingId) return json({ error: "Failed to create booking." }, { status: 500 });
 
   const baseUrl = getBaseUrl(request, env);
@@ -168,9 +152,11 @@ export async function onRequestPost({ request, env }) {
     `<strong>Location:</strong> ${location}`,
     `<strong>Vehicle:</strong> ${vehicle} (${vehicleSize || "n/a"})`,
     `<strong>Package:</strong> ${pkg || "n/a"}`,
-    (total > 0 ? `<strong>Estimate:</strong> $${total.toFixed(2)} ${currency}` : ""),
+    (total > 0
+      ? `<strong>Estimate:</strong> $${total.toFixed(2)} ${currency} (package $${packagePrice.toFixed(2)} + add-ons $${addonsTotal.toFixed(2)} + fees $${fees.toFixed(2)} + HST $${tax.toFixed(2)})`
+      : ""),
     addons ? `<strong>Add-ons:</strong> ${addons}` : "",
-    notesWithPricing ? `<strong>Notes:</strong> ${notesWithPricing}` : "",
+    notes ? `<strong>Notes:</strong> ${notes}` : "",
     `<span style="color:#667085;font-size:12px;">Ref: ${bookingId}</span>`
   ].filter(Boolean);
 
@@ -183,14 +169,15 @@ export async function onRequestPost({ request, env }) {
 
   const textEmail = [
     "New booking request (pending hold).",
-    `Date: ${date}`,
+    `Date: ${date} (${formatBusinessHoursNote(date)})`,
     `Start time: ${startTime}`,
     `Customer: ${name} (${email}${phone ? ` • ${phone}` : ""})`,
     `Location: ${location}`,
     `Vehicle: ${vehicle} (${vehicleSize || "n/a"})`,
     `Package: ${pkg || "n/a"}`,
+    (estimateLine ? estimateLine : ""),
     addons ? `Add-ons: ${addons}` : "",
-    notesWithPricing ? `Notes: ${notesWithPricing}` : "",
+    notes ? `Notes: ${notes}` : "",
     "",
     `Approve: ${approveUrl}`,
     `Reject: ${rejectUrl}`,
