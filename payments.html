@@ -80,12 +80,14 @@
         return;
       }
 
-      $('payDetails').style.display = '';
-      $('d_booking').textContent = `#${data.booking.id} — ${data.booking.date} ${data.booking.start_time}`;
-      $('d_name').textContent = data.booking.customer_name || '';
-      $('d_email').textContent = data.booking.customer_email || '';
-      $('d_amount').textContent = data.booking.amount_label || '';
-      $('d_notes').textContent = data.booking.notes || '';
+      $('d_booking').textContent = `#${data.booking.id} — ${data.booking.date} ${data.booking.startTime}`;
+      $('d_name').textContent = data.booking.customerName || '';
+      $('d_email').textContent = data.booking.customerEmail || '';
+      $('d_amount').textContent = `$${Number(data.booking.total || 0).toFixed(2)} ${data.booking.currency || 'CAD'}`;
+      $('d_notes').textContent = data.booking.addons
+        ? `Add-ons: ${data.booking.addons}\n\n${data.booking.notes || ''}`.trim()
+        : (data.booking.notes || '');
+
 
       btnStripe.disabled = false;
       btnPaypal.disabled = false;
