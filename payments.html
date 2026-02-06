@@ -73,7 +73,7 @@
       }
       setNotice('Loading booking…');
 
-      const res = await fetch(`/api/payments/quote?booking=${encodeURIComponent(bookingId)}&token=${encodeURIComponent(token)}`);
+      const res = await fetch(`/api/payments/quote?bookingId=${encodeURIComponent(bookingId)}&token=${encodeURIComponent(token)}`);
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         setNotice(data.error || 'Could not load booking.');
