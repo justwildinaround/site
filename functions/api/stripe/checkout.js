@@ -1,72 +1,87 @@
-import Stripe from "stripe";
-import { json, safeText, getBaseUrl } from "../bookings/lib.js";
-
-// POST /api/stripe/checkout
-// Body: { bookingId, token }
-// Returns: { url }
+import { json, safeText } from "../bookings/lib.js";
 
 export async function onRequestPost({ request, env }) {
-  if (!env.BOOKINGS_DB) {
-    return json({ error: "Server not configured: missing D1 binding BOOKINGS_DB." }, { status: 500 });
-  }
-  if (!env.STRIPE_SECRET_KEY) {
-    return json({ error: "Server not configured: missing STRIPE_SECRET_KEY." }, { status: 500 });
-  }
-
-  let body;
   try {
-    body = await request.json();
-  } catch {
-    return json({ error: "Invalid JSON." }, { status: 400 });
+    if (!env.STRIPE_SECRET_KEY) {
+      return json({ error: "Missing STRIPE_SECRET_KEY env var." }, { status: 500 });
+    }
+    if (!env.PUBLIC_BASE_URL) {
+      return json({ error: "Missing PUBLIC_BASE_URL env var." }, { status: 500 });
+    }
+    if (!env.BOOKINGS_DB) {
+      return json({ error: "Missing D1 binding BOOKINGS_DB." }, { status: 500 });
+    }
+
+    const body = await request.json().catch(() => ({}));
+    const payToken = safeText(body.payToken, 200);
+    if (!payToken) return json({ error: "Missing payToken." }, { status: 400 });
+
+    // Load booking (we expect total_cad + currency exist; pay_token exists from your schema)
+    const row = await env.BOOKINGS_DB.prepare(
+      `SELECT id, date, start_time, customer_email, customer_name,
+              total_cad, currency
+       FROM bookings
+       WHERE pay_token = ?
+       LIMIT 1`
+    ).bind(payToken).first();
+
+    if (!row) return json({ error: "Invalid pay token." }, { status: 404 });
+
+    const totalCad = Number(row.total_cad || 0);
+    if (!Number.isFinite(totalCad) || totalCad <= 0) {
+      return json({ error: "Booking total is missing or invalid (total_cad must be > 0)." }, { status: 400 });
+    }
+
+    const amount = Math.round(totalCad * 100); // cents
+    const currency = (row.currency || "CAD").toLowerCase();
+
+    const base = String(env.PUBLIC_BASE_URL).replace(/\/+$/g, "");
+    const successUrl = `${base}/payment-success.html?ref=${encodeURIComponent(row.id)}`;
+    const cancelUrl = `${base}/payment-cancelled.html?ref=${encodeURIComponent(row.id)}`;
+
+    // Create a Stripe Checkout Session via HTTPS (no stripe SDK)
+    const params = new URLSearchParams();
+    params.set("mode", "payment");
+    params.set("success_url", successUrl);
+    params.set("cancel_url", cancelUrl);
+
+    // Customer email (optional but helps checkout)
+    if (row.customer_email) params.set("customer_email", String(row.customer_email));
+
+    // One line item with the booking total
+    params.set("line_items[0][quantity]", "1");
+    params.set("line_items[0][price_data][currency]", currency);
+    params.set("line_items[0][price_data][unit_amount]", String(amount));
+    params.set("line_items[0][price_data][product_data][name]", "Detail’N Co. Booking Deposit/Payment");
+    params.set(
+      "line_items[0][price_data][product_data][description]",
+      `Booking #${row.id} — ${row.date} ${row.start_time}`
+    );
+
+    // Metadata
+    params.set("metadata[booking_id]", String(row.id));
+    params.set("metadata[pay_token]", payToken);
+
+    const resp = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: params.toString()
+    });
+
+    const data = await resp.json().catch(() => null);
+
+    if (!resp.ok) {
+      return json(
+        { error: "Stripe session create failed.", stripeStatus: resp.status, stripeResponse: data },
+        { status: 500 }
+      );
+    }
+
+    return json({ url: data.url, id: data.id }, { status: 200 });
+  } catch (e) {
+    return json({ error: "Checkout failed.", details: String(e?.message || e) }, { status: 500 });
   }
-
-  const bookingId = Number(body.bookingId || 0);
-  const token = safeText(body.token, 200);
-  if (!bookingId || !token) return json({ error: "Missing bookingId/token." }, { status: 400 });
-
-  const booking = await env.BOOKINGS_DB.prepare(
-    `SELECT id, status, customer_email, customer_name, pay_token, total_cad, currency, notes
-     FROM bookings WHERE id = ? LIMIT 1`
-  ).bind(bookingId).first();
-
-  if (!booking) return json({ error: "Booking not found." }, { status: 404 });
-  if (booking.status !== "approved") return json({ error: "Booking is not approved." }, { status: 409 });
-  if (safeText(booking.pay_token, 200) !== token) return json({ error: "Invalid token." }, { status: 401 });
-
-  // Prefer stored total_cad; fallback to parsing "Estimate: $X.XX" from notes for older rows.
-  let amountCad = Number(booking.total_cad || 0);
-  if (!Number.isFinite(amountCad) || amountCad <= 0) {
-    const m = String(booking.notes || "").match(/Estimate:\s*\$([0-9]+(?:\.[0-9]{2})?)/i);
-    if (m) amountCad = Number(m[1]);
-  }
-  if (!Number.isFinite(amountCad) || amountCad <= 0) {
-    return json({ error: "Booking has no payable total." }, { status: 400 });
-  }
-
-  const stripe = new Stripe(env.STRIPE_SECRET_KEY);
-  const baseUrl = getBaseUrl(request, env);
-
-  const session = await stripe.checkout.sessions.create({
-    mode: "payment",
-    payment_method_types: ["card"],
-    customer_email: safeText(booking.customer_email, 180) || undefined,
-    line_items: [
-      {
-        price_data: {
-          currency: "cad",
-          product_data: {
-            name: "Detail’N Co. — Booking Deposit/Payment",
-            description: `Booking #${booking.id}`
-          },
-          unit_amount: Math.round(amountCad * 100)
-        },
-        quantity: 1
-      }
-    ],
-    metadata: { bookingId: String(booking.id) },
-    success_url: `${baseUrl}/payments.html?booking=${encodeURIComponent(String(booking.id))}&token=${encodeURIComponent(token)}&status=success`,
-    cancel_url: `${baseUrl}/payments.html?booking=${encodeURIComponent(String(booking.id))}&token=${encodeURIComponent(token)}&status=cancel`
-  });
-
-  return json({ url: session.url }, { status: 200 });
 }
