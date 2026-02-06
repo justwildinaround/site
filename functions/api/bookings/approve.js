@@ -1,129 +1,141 @@
-import { html, json, nowMs, safeText, getBaseUrl, sendEmail, makeEmailHtml, approvalPage } from "./lib.js";
-
-const makeToken = () => {
-  const bytes = new Uint8Array(24);
-  crypto.getRandomValues(bytes);
-  return Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
-};
-
+import {
+  html,
+  json,
+  nowMs,
+  randomToken,
+  safeText,
+  getBaseUrl,
+  makeEmailHtml,
+  sendEmail,
+} from "./lib.js";
 
 export async function onRequestGet({ request, env }) {
-  if (!env.BOOKINGS_DB) return html(approvalPage({ title: "Server not configured", body: "Missing BOOKINGS_DB binding.", ok: false }), { status: 500 });
-
-  const url = new URL(request.url);
-  const token = safeText(url.searchParams.get("token"), 200);
-  if (!token) return html(approvalPage({ title: "Invalid link", body: "Missing token.", ok: false }), { status: 400 });
-
-  const now = nowMs();
-  const booking = await env.BOOKINGS_DB.prepare(
-    `SELECT * FROM bookings WHERE approve_token = ? LIMIT 1`
-  ).bind(token).first();
-
-  if (!booking) {
-    return html(approvalPage({ title: "Link expired or already used", body: "This approval link is no longer valid.", ok: false }), { status: 410 });
-  }
-
-  if (booking.status !== "pending") {
-    return html(approvalPage({ title: "Already handled", body: `This request is already <strong>${booking.status}</strong>.`, ok: booking.status === "approved" }), { status: 200 });
-  }
-
-  if (booking.expires_at_ms && booking.expires_at_ms <= now) {
-    await env.BOOKINGS_DB.prepare(
-      `UPDATE bookings SET status='expired', approve_token=NULL, reject_token=NULL, updated_at_ms=? WHERE id=?`
-    ).bind(now, booking.id).run();
-
-    return html(approvalPage({
-      title: "Hold expired",
-      body: "This request expired (45-minute hold). The slot is free again.",
-      ok: false
-    }), { status: 410 });
-  }
-
-  // Re-check overlap with existing APPROVED bookings (race safety).
-  const db = env.BOOKINGS_DB;
-
-  const overlap = await db.prepare(
-    `SELECT id FROM bookings
-     WHERE date = ?
-       AND status = 'approved'
-       AND id != ?
-       AND NOT (end_ms <= ? OR start_ms >= ?)
-     LIMIT 1`
-  ).bind(booking.date, booking.id, booking.start_ms, booking.end_ms).first();
-
-  if (overlap) {
-    await env.BOOKINGS_DB.prepare(
-      `UPDATE bookings SET status='rejected', approve_token=NULL, reject_token=NULL, updated_at_ms=? WHERE id=?`
-    ).bind(now, booking.id).run();
-
-    // Notify customer (optional but helpful)
-    try {
-      await sendEmail(env, {
-        to: [booking.customer_email],
-        subject: `Booking request not available — ${booking.date} ${booking.start_time}`,
-        text:
-          `Sorry — that time was taken before we could confirm.\n\n` +
-          `Requested: ${booking.date} ${booking.start_time} (duration to be confirmed)\n\n` +
-          `Please try another time slot on the booking page.`,
-        html: makeEmailHtml({
-          title: "Detail’N Co. — Time no longer available",
-          lines: [
-            "Sorry — that time was taken before we could confirm.",
-            `<strong>Requested:</strong> ${booking.date} ${booking.start_time} (duration to be confirmed)`,
-            "Please try another time on the booking page."
-          ]
-        })
-      });
-    } catch {}
-    return html(approvalPage({ title: "Conflict", body: "That time was already approved for another booking. This request was rejected and the customer was notified.", ok: false }), { status: 409 });
-  }
-  const payToken = makeToken();
-
-  await env.BOOKINGS_DB.prepare(
-    `UPDATE bookings SET status='approved', approve_token=NULL, reject_token=NULL, pay_token=?, updated_at_ms=? WHERE id=?`
-  ).bind(payToken, now, booking.id).run();
-
-  // Customer confirmation email
   try {
-    const baseUrl = getBaseUrl(request, env);
-    const payLink = `${baseUrl}/payments.html?booking=${booking.id}&token=${encodeURIComponent(payToken)}`;
-    await sendEmail(env, {
-      to: [booking.customer_email],
-      subject: `Booking approved ✅ — ${booking.date} ${booking.start_time}`,
-      text:
-        `Your booking request has been approved.\n\n` +
-        `Pay here (after approval): ${payLink}\n\n` +
-        `Date: ${booking.date}\n` +
-        `Time: ${booking.start_time}\n` +
-                `Location: ${booking.location}\n` +
-        `Vehicle: ${booking.vehicle}\n` +
-        `Package: ${booking.package}\n\n` +
-        `If anything changes, reply to this email or reach out via Instagram.\n\n` +
-        `— Detail’N Co.`,
-      html: makeEmailHtml({
-        title: "Detail’N Co. — Booking Approved ✅",
-        lines: [
-          "Your booking request has been approved.",
-          `<strong>Payment:</strong> <a href="${payLink}">Pay for your package & add-ons</a>`,
-          `<strong>Date:</strong> ${booking.date}`,
-          `<strong>Time:</strong> ${booking.start_time}`,
-                    `<strong>Location:</strong> ${booking.location}`,
-          `<strong>Vehicle:</strong> ${booking.vehicle}`,
-          `<strong>Package:</strong> ${booking.package}`,
-          booking.addons ? `<strong>Add-ons:</strong> ${booking.addons}` : "",
-          booking.notes ? `<strong>Notes:</strong> ${booking.notes}` : "",
-          `<span style="color:#667085;font-size:12px;">Need changes? Reply to this email or message Instagram.</span>`
-        ].filter(Boolean),
-        ctaPrimary: { label: "Pay now", href: payLink }
-      })
-    });
-  } catch (e) {
-    // If email fails, approval still stands.
-  }
+    if (!env.BOOKINGS_DB) {
+      return html(
+        `<h1 style="font-family:system-ui">Missing D1 binding: BOOKINGS_DB</h1>`,
+        { status: 500 }
+      );
+    }
 
-  return html(approvalPage({
-    title: "Approved ✅",
-    body: "This booking has been approved. The slot is now locked on the site, and the customer has been emailed.",
-    ok: true
-  }));
+    const url = new URL(request.url);
+    const token = safeText(url.searchParams.get("token"), 256);
+    if (!token) {
+      return html(
+        `<h1 style="font-family:system-ui">Missing token.</h1>`,
+        { status: 400 }
+      );
+    }
+
+    // Find booking by approve token
+    const row = await env.BOOKINGS_DB.prepare(
+      `SELECT id, status, expires_at_ms, customer_email, customer_name, total_cad, currency, pay_token
+       FROM bookings
+       WHERE approve_token = ?
+       LIMIT 1`
+    ).bind(token).first();
+
+    if (!row?.id) {
+      return html(
+        `<h1 style="font-family:system-ui">Invalid/expired approval link.</h1>`,
+        { status: 404 }
+      );
+    }
+
+    const bookingId = Number(row.id);
+    const status = String(row.status || "");
+    const now = nowMs();
+
+    // If already rejected, don't allow approve
+    if (status === "rejected") {
+      return html(
+        `<h1 style="font-family:system-ui">This booking was already rejected.</h1>`,
+        { status: 409 }
+      );
+    }
+
+    // If still pending but expired, block approve
+    if (status === "pending") {
+      const exp = Number(row.expires_at_ms || 0);
+      if (exp && exp <= now) {
+        return html(
+          `<h1 style="font-family:system-ui">This hold expired. Ask the customer to book again.</h1>`,
+          { status: 410 }
+        );
+      }
+    }
+
+    // Ensure pay_token exists (used by payments.html + payment endpoints)
+    const payToken = row.pay_token ? String(row.pay_token) : randomToken(32);
+
+    // Approve booking (idempotent if already approved)
+    await env.BOOKINGS_DB.prepare(
+      `UPDATE bookings
+       SET status = 'approved',
+           pay_token = COALESCE(pay_token, ?),
+           approved_at_ms = COALESCE(approved_at_ms, ?),
+           updated_at_ms = ?
+       WHERE id = ?`
+    ).bind(payToken, now, now, bookingId).run();
+
+    const baseUrl = getBaseUrl(request, env);
+
+    // IMPORTANT: send bookingId + token to payments page
+    const payUrl = `${baseUrl}/payments.html?bookingId=${encodeURIComponent(
+      bookingId
+    )}&token=${encodeURIComponent(payToken)}`;
+
+    // (Optional) email the customer the payment link
+    const customerEmail = safeText(row.customer_email, 200);
+    const customerName = safeText(row.customer_name, 120);
+
+    if (customerEmail) {
+      const total = Number(row.total_cad || 0);
+      const currency = safeText(row.currency || "CAD", 8);
+
+      const lines = [
+        `<strong>Your booking was approved ✅</strong>`,
+        total > 0
+          ? `<strong>Amount:</strong> $${total.toFixed(2)} ${currency}`
+          : `<strong>Amount:</strong> Confirmed by the business`,
+        `Use the button below to complete payment.`,
+      ];
+
+      const htmlEmail = makeEmailHtml({
+        title: "Detail’N Co. — Booking Approved",
+        lines,
+        ctaPrimary: { label: "Pay Now", href: payUrl },
+      });
+
+      const textEmail = [
+        "Your booking was approved.",
+        total > 0 ? `Amount: $${total.toFixed(2)} ${currency}` : `Amount: Confirmed by the business`,
+        `Pay here: ${payUrl}`,
+      ].join("\n");
+
+      try {
+        await sendEmail(env, {
+          to: [customerEmail],
+          subject: "Booking approved — complete payment",
+          text: textEmail,
+          html: htmlEmail,
+          fromName: "Detail’N Co.",
+        });
+      } catch {
+        // Don't fail approval if customer email fails
+      }
+    }
+
+    // Redirect approver directly into payments page too
+    return new Response(null, {
+      status: 302,
+      headers: { Location: payUrl },
+    });
+  } catch (err) {
+    console.error("approve.js error", err);
+    return html(
+      `<h1 style="font-family:system-ui">Error</h1><p>Worker threw an exception while approving. Check logs.</p>`,
+      { status: 500 }
+    );
+  }
 }
