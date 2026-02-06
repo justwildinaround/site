@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payments — Detail’N Co.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .payWrap { max-width: 980px; margin: 0 auto; padding: 120px 18px 60px; }
+    .payCard { border: 1px solid rgba(255,255,255,.10); border-radius: 22px; background: rgba(255,255,255,.03); box-shadow: inset 0 1px 0 rgba(255,255,255,.04); overflow: hidden; }
+    .payBar { height: 6px; background: linear-gradient(90deg, rgba(47,125,246,.9), rgba(255,77,77,.75)); }
+    .payBody { padding: 18px; }
+    .payTitle { font-weight: 900; letter-spacing: .02em; font-size: 22px; margin: 0 0 10px; }
+    .paySub { color: rgba(255,255,255,.72); margin: 0 0 18px; }
+    .kv { display: grid; grid-template-columns: 160px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid rgba(255,255,255,.08); }
+    .kv:first-of-type { border-top: 0; }
+    .k { color: rgba(255,255,255,.55); }
+    .v { color: rgba(255,255,255,.90); }
+    .payBtns { display:flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+    .btnPay { border:0; padding: 12px 14px; border-radius: 14px; font-weight: 900; cursor:pointer; }
+    .btnStripe { background: rgba(47,125,246,.95); color: white; }
+    .btnPaypal { background: rgba(255,77,77,.92); color: white; }
+    .btnGhost { background: rgba(255,255,255,.10); color: rgba(255,255,255,.88); }
+    .notice { margin-top: 12px; color: rgba(255,255,255,.80); }
+    code { background: rgba(0,0,0,.35); padding: 2px 6px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div class="payWrap">
+    <div class="payCard">
+      <div class="payBar"></div>
+      <div class="payBody">
+        <h1 class="payTitle">Complete your payment</h1>
+        <p class="paySub">This secure portal lets you pay by card (Stripe) or PayPal. If you’ve been sent here by mistake, contact the business.</p>
+
+        <div id="payDetails" style="display:none;">
+          <div class="kv"><div class="k">Booking</div><div class="v" id="d_booking"></div></div>
+          <div class="kv"><div class="k">Name</div><div class="v" id="d_name"></div></div>
+          <div class="kv"><div class="k">Email</div><div class="v" id="d_email"></div></div>
+          <div class="kv"><div class="k">Amount</div><div class="v" id="d_amount"></div></div>
+          <div class="kv"><div class="k">Notes</div><div class="v" id="d_notes"></div></div>
+        </div>
+
+        <div class="payBtns">
+          <button id="btnStripe" class="btnPay btnStripe" type="button" disabled>Pay with Card</button>
+          <button id="btnPaypal" class="btnPay btnPaypal" type="button" disabled>Pay with PayPal</button>
+          <a class="btnPay btnGhost" href="/" style="text-decoration:none;display:inline-block;">Back to site</a>
+        </div>
+
+        <div id="notice" class="notice"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const qs = new URLSearchParams(location.search);
+    const bookingId = qs.get('booking');
+    const token = qs.get('token');
+
+    const $ = (id) => document.getElementById(id);
+    const setNotice = (msg) => { $('notice').textContent = msg || ''; };
+
+    const btnStripe = $('btnStripe');
+    const btnPaypal = $('btnPaypal');
+
+    async function fetchQuote() {
+      if (!bookingId || !token) {
+        setNotice('Missing payment link parameters. Please use the link from your email.');
+        return;
+      }
+      setNotice('Loading booking…');
+
+      const res = await fetch(`/api/payments/quote?booking=${encodeURIComponent(bookingId)}&token=${encodeURIComponent(token)}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setNotice(data.error || 'Could not load booking.');
+        return;
+      }
+
+      $('payDetails').style.display = '';
+      $('d_booking').textContent = `#${data.booking.id} — ${data.booking.date} ${data.booking.start_time}`;
+      $('d_name').textContent = data.booking.customer_name || '';
+      $('d_email').textContent = data.booking.customer_email || '';
+      $('d_amount').textContent = data.booking.amount_label || '';
+      $('d_notes').textContent = data.booking.notes || '';
+
+      btnStripe.disabled = false;
+      btnPaypal.disabled = false;
+      setNotice(qs.get('status') === 'success' ? 'Payment completed — thank you! If you don’t see a receipt, check spam.' : '');
+    }
+
+    btnStripe.addEventListener('click', async () => {
+      btnStripe.disabled = true;
+      btnPaypal.disabled = true;
+      setNotice('Starting Stripe checkout…');
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ bookingId, token })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.url) {
+        setNotice(data.error || 'Stripe checkout failed.');
+        btnStripe.disabled = false;
+        btnPaypal.disabled = false;
+        return;
+      }
+      location.href = data.url;
+    });
+
+    btnPaypal.addEventListener('click', async () => {
+      btnStripe.disabled = true;
+      btnPaypal.disabled = true;
+      setNotice('Starting PayPal checkout…');
+      const res = await fetch('/api/paypal/create-order', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ bookingId, token })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.approveUrl) {
+        setNotice(data.error || 'PayPal checkout failed.');
+        btnStripe.disabled = false;
+        btnPaypal.disabled = false;
+        return;
+      }
+      location.href = data.approveUrl;
+    });
+
+    fetchQuote();
+  </script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#070a10" />
+  <title>Contact — Detail’N Co.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="bg bg--dither" aria-hidden="true"></div>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="index.html" aria-label="Home">
+        <img class="brand__logo" src="assets/logo.png" alt="Detail’N Co. logo" onerror="this.style.display='none'">
+        <div class="brand__stack">
+          <div class="brand__name">DETAIL’N CO.</div>
+          <div class="brand__tag">Mobile Auto Detailing</div>
+        </div>
+      </a>
+
+      <nav class="nav__links" aria-label="Primary">
+        <a href="packages.html">Packages</a>
+        <a href="addons.html">Add-ons</a>
+        <a href="payments.html">Payments</a>
+        <a href="service-area.html">Service Area</a>
+		<a href="testimonials.html">Reviews</a>
+        <a href="booking.html">Book</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="nav__mobile" id="navMobile" aria-hidden="true">
+      <a href="packages.html">Packages</a>
+      <a href="addons.html">Add-ons</a>
+      <a href="payments.html">Payments</a>
+      <a href="service-area.html">Service Area</a>
+		<a href="testimonials.html">Reviews</a>
+        <a href="booking.html">Book</a>
+        <a href="contact.html">Contact</a>
+      <a class="btn btn--ghost" href="https://instagram.com/detail.n.co" target="_blank" rel="noreferrer">Instagram</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" style="padding-top:42px;">
+      <div class="container">
+        <div class="head">
+          <div class="kicker">Contact</div>
+          <h2>Request a booking.</h2>
+          <p>Send your vehicle details, location, and preferred package. We’ll respond with availability and confirm scope.</p>
+        </div>
+
+        <div class="cta">
+          <div class="cta__left">
+            <div class="cta__actions">
+              <a class="btn btn--primary" href="https://instagram.com/detail.n.co" target="_blank" rel="noreferrer">Message on Instagram</a>
+              <button class="btn btn--ghost" id="copyMsgBtn" type="button">Copy booking message</button>
+            </div>
+
+            <div class="contactLine">
+              <div class="contactLine__label">Text / Call</div>
+              <div class="contactLine__actions">
+                <a class="btn btn--ghost btn--small" href="sms:+13435588906">Text: 1-343-558-8906</a>
+                <a class="btn btn--ghost btn--small" href="tel:+13435588906">Call: 1-343-558-8906</a>
+              </div>
+            </div>
+
+            <div class="contactLine">
+              <div class="contactLine__label">Email</div>
+              <div class="contactLine__actions">
+                <button class="btn btn--ghost btn--small" id="copyEmailBtn" type="button">Email</button>
+              </div>
+            </div>
+
+            <div class="fine">Instagram: <a href="https://instagram.com/detail.n.co" target="_blank" rel="noreferrer">@detail.n.co</a></div>
+          </div>
+
+          <div class="cta__right">
+            <div class="form">
+              <div class="form__title">Quick Booking Message</div>
+              <div class="form__hint">Copy and paste into Instagram DM, SMS, or email.</div>
+
+              <textarea id="bookingMessage" rows="13" readonly>Hi Detail’N Co., I’d like to book a mobile detail.
+
+Vehicle: (year/make/model)
+Vehicle size: (small / medium / large)
+Preferred package: (Select / Signature / Showroom)
+Add-ons requested: (optional)
+Location: (postal code / area)
+Preferred days/times: (2 options)
+
+Please contact me back at:
+(Your phone or email)</textarea>
+
+              <div class="form__row">
+                <button class="btn btn--primary btn--full" id="copyMsgBtn2" type="button">Copy message</button>
+              </div>
+
+              <div class="form__hint muted">Condition-based services are confirmed before work begins.</div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <a class="footerBrand" href="index.html" aria-label="Home">
+            <img class="footerBrand__logo" src="assets/logo.png" alt="Detail’N Co. logo" onerror="this.style.display='none'">
+            <div class="footerBrand__stack">
+              <div class="footerBrand__name">DETAIL’N CO.</div>
+              <div class="footerBrand__tag">Mobile Auto Detailing</div>
+            </div>
+          </a>
+
+          <div class="footerLinks">
+            <a href="packages.html">Packages</a>
+            <a href="addons.html">Add-ons</a>
+            <a href="payments.html">Payments</a>
+            <a href="service-area.html">Service Area</a>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
