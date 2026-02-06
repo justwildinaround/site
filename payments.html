@@ -57,7 +57,7 @@
 
   <script>
     const qs = new URLSearchParams(location.search);
-    const bookingId = qs.get('booking');
+    const bookingId = qs.get('bookingId') || qs.get('booking');
     const token = qs.get('token');
 
     const $ = (id) => document.getElementById(id);
