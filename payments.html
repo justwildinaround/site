@@ -4,75 +4,164 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Payments — Detail’N Co.</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css" />
+
+  <link rel="stylesheet" href="styles.css" />
+
   <style>
-    .wrap { max-width: 980px; margin: 0 auto; padding: 120px 18px 60px; }
-    .card { border: 1px solid rgba(255,255,255,.10); border-radius: 22px; background: rgba(255,255,255,.03); box-shadow: inset 0 1px 0 rgba(255,255,255,.04); overflow: hidden; }
-    .bar { height: 6px; background: linear-gradient(90deg, rgba(47,125,246,.9), rgba(255,77,77,.75)); }
-    .body { padding: 18px; }
-    h1 { margin: 0 0 10px; font-weight: 900; letter-spacing: .02em; font-size: 26px; }
-    p { margin: 0 0 14px; color: rgba(255,255,255,.72); line-height: 1.55; }
-    .grid { display: grid; gap: 12px; margin-top: 14px; }
-    .opt { border: 1px solid rgba(255,255,255,.10); border-radius: 16px; padding: 14px; background: rgba(255,255,255,.04); }
-    .optTitle { font-weight: 900; margin-bottom: 6px; }
-    .optDesc { color: rgba(255,255,255,.78); line-height: 1.45; }
-    .pill { display:inline-block; margin-top:10px; padding:6px 10px; border-radius: 999px; background: rgba(255,255,255,.08); color: rgba(255,255,255,.85); font-weight: 700; font-size: 12px; }
-    code { background: rgba(0,0,0,.35); padding: 2px 6px; border-radius: 8px; }
-    .small { color: rgba(255,255,255,.60); font-size: 12px; margin-top: 14px; line-height: 1.4; }
-    a { color: rgba(138,180,255,.95); }
+    .payWrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 120px 18px 80px;
+    }
+
+    .payCard {
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 22px;
+      background: rgba(255,255,255,.04);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+      overflow: hidden;
+    }
+
+    .payBar {
+      height: 6px;
+      background: linear-gradient(90deg, rgba(47,125,246,.9), rgba(255,77,77,.8));
+    }
+
+    .payBody {
+      padding: 28px;
+    }
+
+    .payTitle {
+      font-weight: 900;
+      letter-spacing: .02em;
+      font-size: 26px;
+      margin: 0 0 10px;
+    }
+
+    .paySub {
+      color: rgba(255,255,255,.75);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .method {
+      border-top: 1px solid rgba(255,255,255,.1);
+      padding: 16px 0;
+    }
+
+    .method:first-of-type {
+      border-top: 0;
+    }
+
+    .method h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .method p {
+      margin: 0;
+      color: rgba(255,255,255,.75);
+      line-height: 1.5;
+    }
+
+    .note {
+      margin-top: 24px;
+      padding: 16px;
+      background: rgba(255,255,255,.06);
+      border-radius: 14px;
+      color: rgba(255,255,255,.85);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .backBtn {
+      display: inline-block;
+      margin-top: 26px;
+      text-decoration: none;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.12);
+      color: white;
+      font-weight: 700;
+    }
+
+    .backBtn:hover {
+      background: rgba(255,255,255,.18);
+    }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="bar"></div>
-      <div class="body">
-        <h1>Payment Options</h1>
-        <p>
-          Detail’N Co. accepts the following payment methods. If you have a booking approval email, you can simply reply to it to confirm how you’d like to pay.
+
+  <div class="payWrap">
+
+    <div class="payCard">
+
+      <div class="payBar"></div>
+
+      <div class="payBody">
+
+        <h1 class="payTitle">Payment Options</h1>
+
+        <p class="paySub">
+          Detail’N Co. offers multiple secure payment methods for your convenience.
+          Payment instructions will be provided once your appointment is approved.
         </p>
 
-        <div class="grid">
-          <div class="opt">
-            <div class="optTitle">Cash</div>
-            <div class="optDesc">Pay in cash at the time of service.</div>
-            <span class="pill">In-person</span>
-          </div>
-
-          <div class="opt">
-            <div class="optTitle">E-Transfer (EMT)</div>
-            <div class="optDesc">
-              Send an e-transfer to: <code>detailnco2@gmail.com</code><br/>
-              Include your booking reference (ex: <code>#19</code>) in the message.
-            </div>
-            <span class="pill">Recommended</span>
-          </div>
-
-          <div class="opt">
-            <div class="optTitle">Debit / Credit (in-person)</div>
-            <div class="optDesc">Tap/insert at the time of service (where available).</div>
-            <span class="pill">In-person</span>
-          </div>
-
-          <div class="opt">
-            <div class="optTitle">PayPal</div>
-            <div class="optDesc">
-              PayPal is available upon request. Reply to your approval email and we’ll provide the PayPal payment details/invoice.
-            </div>
-            <span class="pill">By request</span>
-          </div>
+        <!-- CASH -->
+        <div class="method">
+          <h3>💵 Cash</h3>
+          <p>
+            Accepted at the time of service.
+            Please have exact change when possible.
+          </p>
         </div>
 
-        <div class="small">
-          If you’re unsure what your booking reference is, check your confirmation/approval email (it will show “Ref: #…”) or contact us.
-          <br/>
-          <a href="/">Back to site</a>
+        <!-- EMT -->
+        <div class="method">
+          <h3>📧 E-Transfer (EMT)</h3>
+          <p>
+            Send payment by Interac e-Transfer after approval.
+            Instructions will be provided with your booking confirmation.
+          </p>
         </div>
+
+        <!-- CARD -->
+        <div class="method">
+          <h3>💳 Debit / Credit Card</h3>
+          <p>
+            Available through our secure online booking system
+            once your appointment has been approved.
+          </p>
+        </div>
+
+        <!-- PAYPAL -->
+        <div class="method">
+          <h3>🅿️ PayPal</h3>
+          <p>
+            Available through the online booking form
+            after your appointment is approved.
+          </p>
+        </div>
+
+        <!-- NOTE -->
+        <div class="note">
+          ✔ Debit/Credit and PayPal payments become available after your booking
+          has been reviewed and approved by our team.
+          <br><br>
+          You will receive a secure payment link by email once approved.
+        </div>
+
+        <a href="/" class="backBtn">← Back to Site</a>
+
       </div>
     </div>
   </div>
+
 </body>
 </html>
