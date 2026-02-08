@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#070a10" name="theme-color"/>
+<title>Add-ons — Detail’N Co.</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="styles.css" rel="stylesheet">
+</link></head>
+<body>
+<div aria-hidden="true" class="bg"></div>
+<div aria-hidden="true" class="bg bg--dither"></div>
+<header class="nav">
+<div class="container nav__inner">
+<a aria-label="Home" class="brand" href="index.html">
+<img alt="Detail’N Co. logo" class="brand__logo" onerror="this.style.display='none'" src="assets/logo.png"/>
+<div class="brand__stack">
+<div class="brand__name">DETAIL’N CO.</div>
+<div class="brand__tag">Mobile Auto Detailing</div>
+</div>
+</a>
+<nav aria-label="Primary" class="nav__links">
+<a href="packages.html">Packages</a>
+<a aria-current="page" href="addons.html">Add-ons</a>
+<a href="payments.html">Payments</a>
+<a href="service-area.html">Service Area</a>
+<a href="testimonials.html">Reviews</a>
+<a href="booking.html">Book</a>
+<a href="contact.html">Contact</a>
+</nav>
+<button aria-expanded="false" aria-label="Open menu" class="nav__toggle" id="navToggle">
+<span></span><span></span><span></span>
+</button>
+</div>
+<div aria-hidden="true" class="nav__mobile" id="navMobile">
+<a href="packages.html">Packages</a>
+<a href="addons.html">Add-ons</a>
+<a href="payments.html">Payments</a>
+<a href="service-area.html">Service Area</a>
+<a href="testimonials.html">Reviews</a>
+<a href="booking.html">Book</a>
+<a href="contact.html">Contact</a>
+<a class="btn btn--ghost" href="https://instagram.com/detail.n.co" rel="noreferrer" target="_blank">Instagram</a>
+</div>
+</header>
+<main>
+<section class="section" style="padding-top:42px;">
+<div class="container">
+<div class="head">
+<div class="kicker">Add-ons</div>
+<h2>Optional services you can add to your booking.</h2>
+<p>All prices are in CAD. Add-ons are requested during booking (no online checkout).</p>
+</div>
+<!-- CHECKOUT SUMMARY -->
+<div class="grid" style="grid-template-columns:1fr 1fr; margin-top:14px;">
+
+
+</div>
+<!-- ADD-ONS CARDS -->
+<div class="cards cards--3" style="margin-top:16px;">
+<!-- Interior & Comfort -->
+<article class="card">
+<div class="card__head">
+<div class="tag tag--blue">INTERIOR &amp; COMFORT</div>
+<div class="card__title">Cabin Upgrade Add-ons</div>
+<div class="card__desc">Freshness, odor removal, and deeper interior restoration.</div>
+</div>
+<div class="addonList">
+<!-- Fixed-price (selectable) -->
+<label class="addonItem js-addon" data-amount="25" data-key="interior_rescent">
+<div class="addonItem__name">Interior Re-Scent (up to 1-month freshness)</div>
+<div class="addonItem__price">$25 </div>
+<div class="addonItem__note">A clean, refreshed cabin finish. Longevity varies by usage and environment.</div>
+</label>
+<label class="addonItem js-addon" data-amount="60" data-key="smoke_odor">
+<div class="addonItem__name">Smoke Odor Removal</div>
+<div class="addonItem__price">$60 </div>
+<div class="addonItem__note">Long-lasting odor treatment. Severity and source may affect results.</div>
+</label>
+<!-- Quote-only (not selectable) -->
+<div class="addonItem" data-quote="1">
+<div class="addonItem__name">Seat Steam Cleaning</div>
+<div class="addonItem__price">Quoted</div>
+<div class="addonItem__note">Starting at $80. Quoted based on seat material, size, staining, and overall condition.</div>
+</div>
+<div class="addonItem" data-quote="1">
+<div class="addonItem__name">Leather Treatment</div>
+<div class="addonItem__price">Quoted</div>
+<div class="addonItem__note">Starting at $50. Cleaning, conditioning, and protection. Quoted by condition and interior size.</div>
+</div>
+<label class="addonItem js-addon" data-amount="5" data-key="cabin_filter_clean">
+<div class="addonItem__name">Cabin Air Filter Cleaning</div>
+<div class="addonItem__price">$5 </div>
+<div class="addonItem__note">Light clean-out when accessible. Replacement not included.</div>
+</label>
+<label class="addonItem js-addon" data-amount="10" data-key="engine_filter_clean">
+<div class="addonItem__name">Engine Air Filter Cleaning</div>
+<div class="addonItem__price">$10 </div>
+<div class="addonItem__note">Light clean-out when accessible. Replacement not included.</div>
+</label>
+</div>
+<div class="card__foot">
+<div class="fine">Quoted items are confirmed before work begins.</div>
+</div>
+</article>
+<!-- Exterior & Visual -->
+<article class="card card--featured">
+<div class="card__head">
+<div class="tag tag--red">EXTERIOR &amp; VISUAL</div>
+<div class="card__title">Finish &amp; Detail Add-ons</div>
+<div class="card__desc">Visibility, gloss, and targeted exterior improvement.</div>
+</div>
+<div class="addonList">
+<label class="addonItem js-addon" data-amount="20" data-key="windshield_wax">
+<div class="addonItem__name">Windshield Waxing &amp; Window Cleaning</div>
+<div class="addonItem__price">$20 </div>
+<div class="addonItem__note">Hydrophobic windshield finish + clean glass clarity.</div>
+</label>
+<label class="addonItem js-addon" data-amount="30" data-key="bug_tar">
+<div class="addonItem__name">Bug &amp; Tar Removal</div>
+<div class="addonItem__price">$30 </div>
+<div class="addonItem__note">Targeted treatment for front end / lower panels. Results vary by baked-on severity.</div>
+</label>
+<div class="addonItem" data-quote="1">
+<div class="addonItem__name">Chrome Shining / Polish</div>
+<div class="addonItem__price">Quoted</div>
+<div class="addonItem__note">Small $40 • Med $48 • Large $54 (size-based). Restores clarity and shine. Deep pitting may remain.</div>
+</div>
+<div class="addonItem" data-quote="1">
+<div class="addonItem__name">Rim Paint Touch-up (Gloss Black Only)</div>
+<div class="addonItem__price">Quoted</div>
+<div class="addonItem__note">Starting at $40. Quoted after inspection based on severity and rim count.</div>
+</div>
+<div class="addonItem" data-quote="1">
+<div class="addonItem__name">Minor Scuff Removal</div>
+<div class="addonItem__price">Quoted</div>
+<div class="addonItem__note">Starting at $20. Quoted after inspection. Results vary by depth and paint condition.</div>
+</div>
+</div>
+<div class="card__foot">
+<div class="fine">Size/condition items are quoted to avoid surprises.</div>
+</div>
+</article>
+<!-- Mechanical & Utility -->
+<article class="card">
+<div class="card__head">
+<div class="tag tag--blue">MECHANICAL &amp; UTILITY</div>
+<div class="card__title">Practical Add-ons</div>
+<div class="card__desc">Quick convenience services that help keep you rolling.</div>
+</div>
+<div class="addonList">
+<label class="addonItem js-addon" data-amount="5" data-key="tire_air">
+<div class="addonItem__name">Tire Air Top-up</div>
+<div class="addonItem__price">$5 </div>
+<div class="addonItem__note">Quick pressure top-up. Sensor resets not included.</div>
+</label>
+<div class="addonItem" data-quote="1">
+<div class="addonItem__name">Nail Removal &amp; Tire Repair</div>
+<div class="addonItem__price">Quoted</div>
+<div class="addonItem__note">Starting at $40. Repairability depends on puncture location and tire condition.</div>
+</div>
+<label class="addonItem js-addon" data-amount="50" data-key="engine_bay_clean">
+<div class="addonItem__name">Engine Bay Cleaning</div>
+<div class="addonItem__price">$50 </div>
+<div class="addonItem__note">Careful surface clean. Not a deep degrease unless quoted separately.</div>
+</label>
+</div>
+<div class="card__foot">
+<div class="fine">Safety-first assessment on all utility work.</div>
+</div>
+</article>
+</div>
+<div class="notice">
+<div class="notice__bar"></div>
+<div class="notice__text">
+<strong>Add-ons are always optional.</strong>
+            Quoted services are confirmed with you before work begins.
+          </div>
+</div>
+<footer class="footer">
+<a aria-label="Home" class="footerBrand" href="index.html">
+<img alt="Detail’N Co. logo" class="footerBrand__logo" onerror="this.style.display='none'" src="assets/logo.png"/>
+<div class="footerBrand__stack">
+<div class="footerBrand__name">DETAIL’N CO.</div>
+<div class="footerBrand__tag">Mobile Auto Detailing</div>
+</div>
+</a>
+<div class="footerLinks">
+<a href="packages.html">Packages</a>
+<a href="payments.html">Payments</a>
+<a href="service-area.html">Service Area</a>
+<a href="booking.html">Book</a>
+<a href="contact.html">Contact</a>
+</div>
+</footer>
+</div>
+</section>
+</main>
+<script src="app.js"></script>
+<!-- Add-ons checkout logic -->
+
+</body>
+</html>
