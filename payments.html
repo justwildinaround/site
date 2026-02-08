@@ -7,132 +7,72 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/styles.css" />
   <style>
-    .payWrap { max-width: 980px; margin: 0 auto; padding: 120px 18px 60px; }
-    .payCard { border: 1px solid rgba(255,255,255,.10); border-radius: 22px; background: rgba(255,255,255,.03); box-shadow: inset 0 1px 0 rgba(255,255,255,.04); overflow: hidden; }
-    .payBar { height: 6px; background: linear-gradient(90deg, rgba(47,125,246,.9), rgba(255,77,77,.75)); }
-    .payBody { padding: 18px; }
-    .payTitle { font-weight: 900; letter-spacing: .02em; font-size: 22px; margin: 0 0 10px; }
-    .paySub { color: rgba(255,255,255,.72); margin: 0 0 18px; }
-    .kv { display: grid; grid-template-columns: 160px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid rgba(255,255,255,.08); }
-    .kv:first-of-type { border-top: 0; }
-    .k { color: rgba(255,255,255,.55); }
-    .v { color: rgba(255,255,255,.90); }
-    .payBtns { display:flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
-    .btnPay { border:0; padding: 12px 14px; border-radius: 14px; font-weight: 900; cursor:pointer; }
-    .btnStripe { background: rgba(47,125,246,.95); color: white; }
-    .btnPaypal { background: rgba(255,77,77,.92); color: white; }
-    .btnGhost { background: rgba(255,255,255,.10); color: rgba(255,255,255,.88); }
-    .notice { margin-top: 12px; color: rgba(255,255,255,.80); }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 120px 18px 60px; }
+    .card { border: 1px solid rgba(255,255,255,.10); border-radius: 22px; background: rgba(255,255,255,.03); box-shadow: inset 0 1px 0 rgba(255,255,255,.04); overflow: hidden; }
+    .bar { height: 6px; background: linear-gradient(90deg, rgba(47,125,246,.9), rgba(255,77,77,.75)); }
+    .body { padding: 18px; }
+    h1 { margin: 0 0 10px; font-weight: 900; letter-spacing: .02em; font-size: 26px; }
+    p { margin: 0 0 14px; color: rgba(255,255,255,.72); line-height: 1.55; }
+    .grid { display: grid; gap: 12px; margin-top: 14px; }
+    .opt { border: 1px solid rgba(255,255,255,.10); border-radius: 16px; padding: 14px; background: rgba(255,255,255,.04); }
+    .optTitle { font-weight: 900; margin-bottom: 6px; }
+    .optDesc { color: rgba(255,255,255,.78); line-height: 1.45; }
+    .pill { display:inline-block; margin-top:10px; padding:6px 10px; border-radius: 999px; background: rgba(255,255,255,.08); color: rgba(255,255,255,.85); font-weight: 700; font-size: 12px; }
     code { background: rgba(0,0,0,.35); padding: 2px 6px; border-radius: 8px; }
+    .small { color: rgba(255,255,255,.60); font-size: 12px; margin-top: 14px; line-height: 1.4; }
+    a { color: rgba(138,180,255,.95); }
   </style>
 </head>
 <body>
-  <div class="payWrap">
-    <div class="payCard">
-      <div class="payBar"></div>
-      <div class="payBody">
-        <h1 class="payTitle">Complete your payment</h1>
-        <p class="paySub">This secure portal lets you pay by card (Stripe) or PayPal. If you’ve been sent here by mistake, contact the business.</p>
+  <div class="wrap">
+    <div class="card">
+      <div class="bar"></div>
+      <div class="body">
+        <h1>Payment Options</h1>
+        <p>
+          Detail’N Co. accepts the following payment methods. If you have a booking approval email, you can simply reply to it to confirm how you’d like to pay.
+        </p>
 
-        <div id="payDetails" style="display:none;">
-          <div class="kv"><div class="k">Booking</div><div class="v" id="d_booking"></div></div>
-          <div class="kv"><div class="k">Name</div><div class="v" id="d_name"></div></div>
-          <div class="kv"><div class="k">Email</div><div class="v" id="d_email"></div></div>
-          <div class="kv"><div class="k">Amount</div><div class="v" id="d_amount"></div></div>
-          <div class="kv"><div class="k">Notes</div><div class="v" id="d_notes"></div></div>
+        <div class="grid">
+          <div class="opt">
+            <div class="optTitle">Cash</div>
+            <div class="optDesc">Pay in cash at the time of service.</div>
+            <span class="pill">In-person</span>
+          </div>
+
+          <div class="opt">
+            <div class="optTitle">E-Transfer (EMT)</div>
+            <div class="optDesc">
+              Send an e-transfer to: <code>detailnco2@gmail.com</code><br/>
+              Include your booking reference (ex: <code>#19</code>) in the message.
+            </div>
+            <span class="pill">Recommended</span>
+          </div>
+
+          <div class="opt">
+            <div class="optTitle">Debit / Credit (in-person)</div>
+            <div class="optDesc">Tap/insert at the time of service (where available).</div>
+            <span class="pill">In-person</span>
+          </div>
+
+          <div class="opt">
+            <div class="optTitle">PayPal</div>
+            <div class="optDesc">
+              PayPal is available upon request. Reply to your approval email and we’ll provide the PayPal payment details/invoice.
+            </div>
+            <span class="pill">By request</span>
+          </div>
         </div>
 
-        <div class="payBtns">
-          <button id="btnStripe" class="btnPay btnStripe" type="button" disabled>Pay with Card</button>
-          <button id="btnPaypal" class="btnPay btnPaypal" type="button" disabled>Pay with PayPal</button>
-          <a class="btnPay btnGhost" href="/" style="text-decoration:none;display:inline-block;">Back to site</a>
+        <div class="small">
+          If you’re unsure what your booking reference is, check your confirmation/approval email (it will show “Ref: #…”) or contact us.
+          <br/>
+          <a href="/">Back to site</a>
         </div>
-
-        <div id="notice" class="notice"></div>
       </div>
     </div>
   </div>
-
-  <script>
-    const qs = new URLSearchParams(location.search);
-    const bookingId = qs.get('bookingId') || qs.get('booking');
-    const token = qs.get('token');
-
-    const $ = (id) => document.getElementById(id);
-    const setNotice = (msg) => { $('notice').textContent = msg || ''; };
-
-    const btnStripe = $('btnStripe');
-    const btnPaypal = $('btnPaypal');
-
-    async function fetchQuote() {
-      if (!bookingId || !token) {
-        setNotice('Missing payment link parameters. Please use the link from your email.');
-        return;
-      }
-      setNotice('Loading booking…');
-
-      const res = await fetch(`/api/payments/quote?bookingId=${encodeURIComponent(bookingId)}&token=${encodeURIComponent(token)}`);
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setNotice(data.error || 'Could not load booking.');
-        return;
-      }
-
-      $('d_booking').textContent = `#${data.booking.id} — ${data.booking.date} ${data.booking.startTime}`;
-      $('d_name').textContent = data.booking.customerName || '';
-      $('d_email').textContent = data.booking.customerEmail || '';
-      $('d_amount').textContent = `$${Number(data.booking.total || 0).toFixed(2)} ${data.booking.currency || 'CAD'}`;
-      $('d_notes').textContent = data.booking.addons
-        ? `Add-ons: ${data.booking.addons}\n\n${data.booking.notes || ''}`.trim()
-        : (data.booking.notes || '');
-
-
-      btnStripe.disabled = false;
-      btnPaypal.disabled = false;
-      setNotice(qs.get('status') === 'success' ? 'Payment completed — thank you! If you don’t see a receipt, check spam.' : '');
-    }
-
-    btnStripe.addEventListener('click', async () => {
-      btnStripe.disabled = true;
-      btnPaypal.disabled = true;
-      setNotice('Starting Stripe checkout…');
-      const res = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ bookingId, token })
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.url) {
-        setNotice(data.error || 'Stripe checkout failed.');
-        btnStripe.disabled = false;
-        btnPaypal.disabled = false;
-        return;
-      }
-      location.href = data.url;
-    });
-
-    btnPaypal.addEventListener('click', async () => {
-      btnStripe.disabled = true;
-      btnPaypal.disabled = true;
-      setNotice('Starting PayPal checkout…');
-      const res = await fetch('/api/paypal/create-order', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ bookingId, token })
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.approveUrl) {
-        setNotice(data.error || 'PayPal checkout failed.');
-        btnStripe.disabled = false;
-        btnPaypal.disabled = false;
-        return;
-      }
-      location.href = data.approveUrl;
-    });
-
-    fetchQuote();
-  </script>
 </body>
 </html>
