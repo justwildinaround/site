@@ -388,5 +388,65 @@ if (wheel) {
   }
 })();
 
+window.addEventListener("DOMContentLoaded", () => {
+  const wheel = document.getElementById("packageWheel");
+  if (!wheel) return;
+
+  const items = [...wheel.querySelectorAll(".wheelItem")];
+  if (!items.length) return;
+
+  let index = 0;
+
+  const setPositions = (activeIndex) => {
+    const step = (Math.PI * 2) / items.length;
+    const radius = parseFloat(getComputedStyle(wheel).getPropertyValue("--radius")) || 140;
+
+    items.forEach((item, i) => {
+      const posIndex = (i - activeIndex + items.length) % items.length;
+      const angle = -Math.PI / 2 + posIndex * step;
+
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+
+      const depth =
+        posIndex === 0 ? 1 :
+        (posIndex === 1 || posIndex === items.length - 1 ? 0.93 : 0.88);
+
+      item.style.setProperty("--wheelT", `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${depth})`);
+      item.classList.toggle("active", i === activeIndex);
+      item.style.zIndex = String(100 - posIndex);
+      item.style.opacity = i === activeIndex ? "1" : "0.55";
+    });
+  };
+
+  setPositions(index);
+
+  const next = () => {
+    index = (index + 1) % items.length;
+    setPositions(index);
+  };
+
+  let interval = setInterval(next, 4000);
+
+  items.forEach((item, i) => {
+    item.addEventListener("click", () => {
+      index = i;
+      setPositions(index);
+      const link = item.dataset.link;
+      if (link) window.location.href = link;
+    });
+
+    item.addEventListener("mouseenter", () => clearInterval(interval));
+    item.addEventListener("mouseleave", () => {
+      interval = setInterval(next, 4000);
+    });
+  });
+
+  window.addEventListener("resize", () => setPositions(index), { passive: true });
+
+  // debug: remove later
+  console.log("[wheel] initialized", items.length);
+});
+
 
 
