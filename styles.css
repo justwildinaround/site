@@ -960,57 +960,158 @@ textarea{
 
 .reviewActions{ margin-top:12px; display:flex; justify-content:flex-end; }
 
-/* =========================
-   PREMIUM PACKAGE ROTATOR
-   ========================= */
+/* =========================================================
+   DETAIL’N CO — ULTRA-PREMIUM SHOWROOM ROTATOR (FINAL)
+   Drop-in replacement — no edits needed
+   ========================================================= */
 
-/* Force JS-driven positioning */
+#packageWheel{
+  height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+/* Wheel plate */
+
+#packageWheel.wheel{
+  --size: 440px;
+  --radius: 165px;
+
+  width: var(--size);
+  height: var(--size);
+  position: relative;
+  margin: 0 auto;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(circle at 50% 50%, rgba(47,125,246,.08), transparent 65%),
+    radial-gradient(circle at 50% 55%, rgba(255,255,255,.04), transparent 70%),
+    linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  box-shadow:
+    0 60px 120px rgba(0,0,0,.85),
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 0 80px rgba(0,0,0,.55);
+}
+
+/* Card items */
+
 #packageWheel .wheelItem{
-  transform: var(--wheelT, translate(-50%,-50%)) !important;
-  will-change: transform, opacity, filter;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  width: 270px;
+  height: 92px;
+  transform: translate(-50%, -50%);
+
+  border-radius: 22px;
+
+  background: rgba(14, 20, 32, 0.82);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255,255,255,.14);
+
+  box-shadow:
+    0 22px 55px rgba(0,0,0,.75),
+    inset 0 1px 0 rgba(255,255,255,.07);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 18px;
+
+  color: #fff;
+
+  transition:
+    transform .4s cubic-bezier(.2,.8,.2,1),
+    box-shadow .4s,
+    border-color .4s,
+    opacity .4s;
+
+  will-change: transform;
   cursor: pointer;
 }
 
-/* Better glow & “premium” edge */
-#packageWheel .wheelItem{
-  border: 1px solid rgba(255,255,255,.10);
-  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.015));
+/* Title */
+
+#packageWheel .wheelItem strong{
+  font-size: 14px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  font-weight: 900;
 }
+
+/* Subtitle */
+
+#packageWheel .wheelItem span{
+  font-size: 13px;
+  color: rgba(255,255,255,.72);
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+/* Hover effect */
 
 #packageWheel .wheelItem:hover{
-  filter: brightness(1.06) !important;
-  border-color: rgba(47,125,246,.32);
-}
-
-/* Active = neon outline + soft bloom */
-#packageWheel .wheelItem.active{
   border-color: rgba(47,125,246,.55);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.09),
-    0 18px 45px rgba(0,0,0,.55);
+    0 26px 65px rgba(0,0,0,.85),
+    0 0 25px rgba(47,125,246,.18),
+    inset 0 1px 0 rgba(255,255,255,.10);
 }
 
-#packageWheel .wheelItem.active .wheelGlow{
-  opacity: 1 !important;
+/* ACTIVE CENTER CARD */
+
+#packageWheel .wheelItem.active{
+  transform: translate(-50%, -50%) scale(1.18);
+
+  background: rgba(24, 32, 52, 0.95);
+  border-color: rgba(47,125,246,.9);
+
   box-shadow:
-    0 0 12px rgba(47,125,246,.34),
-    0 0 36px rgba(47,125,246,.22),
-    inset 0 0 18px rgba(47,125,246,.12);
+    0 40px 120px rgba(0,0,0,.95),
+    0 0 55px rgba(47,125,246,.35),
+    inset 0 1px 0 rgba(255,255,255,.14);
+
+  z-index: 20;
 }
 
-/* Make the wheel plate less “foggy” */
-#packageWheel.wheel::before{
-  background:
-    radial-gradient(circle at 50% 45%, rgba(47,125,246,.12), transparent 56%),
-    radial-gradient(circle at 30% 70%, rgba(255,255,255,.05), transparent 60%),
-    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.012));
+/* Subtle fade for side items */
+
+#packageWheel .wheelItem:not(.active){
+  opacity: .78;
 }
 
-/* Mobile tune */
+/* Mobile — clean + readable */
+
 @media (max-width: 640px){
-  #packageWheel.wheel{ --size: 310px; --radius: 120px; }
-  #packageWheel .wheelItem{ width: 210px; height: 80px; }
+
+  #packageWheel{
+    height: 390px;
+    margin-top: 20px;
+  }
+
+  #packageWheel.wheel{
+    --size: 320px;
+    --radius: 120px;
+  }
+
+  #packageWheel .wheelItem{
+    width: 210px;
+    height: 78px;
+    padding: 14px;
+  }
+
+  #packageWheel .wheelItem.active{
+    transform: translate(-50%, -50%) scale(1.12);
+  }
 }
+
 
 /* ===== HERO WHEEL FIX ===== */
 
