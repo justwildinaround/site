@@ -324,5 +324,41 @@
       deleteReview(id);
       toast("Review deleted");
     });
+
+    // ----------------------------
+// Package Wheel Rotation
+// ----------------------------
+const wheel = document.getElementById("packageWheel");
+
+if (wheel) {
+  const items = [...wheel.querySelectorAll(".wheelItem")];
+  let index = 0;
+
+  function updateWheel() {
+    items.forEach((item, i) => {
+      item.classList.toggle("active", i === index);
+    });
+  }
+
+  function nextItem() {
+    index = (index + 1) % items.length;
+    updateWheel();
+  }
+
+  let interval = setInterval(nextItem, 4000);
+
+  items.forEach(item => {
+    item.addEventListener("click", () => {
+      const link = item.dataset.link;
+      if (link) window.location.href = link;
+    });
+
+    item.addEventListener("mouseenter", () => clearInterval(interval));
+    item.addEventListener("mouseleave", () => {
+      interval = setInterval(nextItem, 4000);
+    });
+  });
+}
   }
 })();
+
