@@ -325,8 +325,8 @@
       toast("Review deleted");
     });
 
-    // ----------------------------
-// Package Wheel Rotation
+  // ----------------------------
+// Package Wheel (Orbit)
 // ----------------------------
 const wheel = document.getElementById("packageWheel");
 
@@ -334,31 +334,58 @@ if (wheel) {
   const items = [...wheel.querySelectorAll(".wheelItem")];
   let index = 0;
 
-  function updateWheel() {
+  const setPositions = (activeIndex) => {
+    const radius = parseFloat(getComputedStyle(wheel).getPropertyValue("--radius")) || 140;
+    const step = (Math.PI * 2) / items.length;
+
     items.forEach((item, i) => {
-      item.classList.toggle("active", i === index);
+      const posIndex = (i - activeIndex + items.length) % items.length;
+
+      // active at top
+      const angle = -Math.PI / 2 + posIndex * step;
+
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+
+      // subtle depth illusion
+      const depth =
+        posIndex === 0 ? 1 :
+        (posIndex === 1 || posIndex === items.length - 1 ? 0.93 : 0.88);
+
+      item.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${depth})`;
+      item.classList.toggle("active", i === activeIndex);
+      item.style.zIndex = String(100 - posIndex);
+      item.style.opacity = i === activeIndex ? "1" : "0.55";
     });
-  }
+  };
 
-  function nextItem() {
+  setPositions(index);
+
+  const next = () => {
     index = (index + 1) % items.length;
-    updateWheel();
-  }
+    setPositions(index);
+  };
 
-  let interval = setInterval(nextItem, 4000);
+  let interval = setInterval(next, 4000);
 
-  items.forEach(item => {
+  items.forEach((item, i) => {
     item.addEventListener("click", () => {
+      index = i;
+      setPositions(index);
       const link = item.dataset.link;
       if (link) window.location.href = link;
     });
 
     item.addEventListener("mouseenter", () => clearInterval(interval));
     item.addEventListener("mouseleave", () => {
-      interval = setInterval(nextItem, 4000);
+      interval = setInterval(next, 4000);
     });
   });
+
+  window.addEventListener("resize", () => setPositions(index), { passive: true });
+}
 }
   }
 })();
+
 
