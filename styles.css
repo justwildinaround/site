@@ -1310,3 +1310,94 @@ textarea{
 .step{ display:flex; gap:10px; align-items:flex-start; color:rgba(255,255,255,.82); line-height:1.45; font-size:14px; }
 .step strong{ font-weight:900; color:rgba(255,255,255,.92); }
 .divider{ height:1px; background: var(--line); margin:14px 0; }
+
+
+/* =========================
+   LIVE PACKAGE WHEEL
+   ========================= */
+
+.wheelSection {
+  padding-top: 40px;
+}
+
+.wheelWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.wheel {
+  position: relative;
+  width: 320px;
+  height: 320px;
+}
+
+.wheelItem {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform .6s ease, opacity .6s ease;
+  opacity: .25;
+  transform: scale(.85);
+}
+
+.wheelItem.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.wheelInner {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.wheelTitle {
+  font-weight: 900;
+  letter-spacing: .18em;
+  font-size: 18px;
+}
+
+.wheelSub {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: .06em;
+}
+
+/* Neon Glow Ring */
+.wheelGlow {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 999px;
+  border: 1px solid rgba(47,125,246,.4);
+  box-shadow:
+    0 0 12px rgba(47,125,246,.4),
+    0 0 32px rgba(47,125,246,.25),
+    inset 0 0 22px rgba(47,125,246,.15);
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+
+.wheelItem.active .wheelGlow {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 640px){
+  .wheel {
+    width: 260px;
+    height: 260px;
+  }
+
+  .wheelGlow {
+    width: 210px;
+    height: 210px;
+  }
+}
