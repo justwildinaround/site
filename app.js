@@ -352,7 +352,7 @@ if (wheel) {
         posIndex === 0 ? 1 :
         (posIndex === 1 || posIndex === items.length - 1 ? 0.93 : 0.88);
 
-      item.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${depth})`;
+      item.style.setProperty("--wheelT", `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${depth})`);
       item.classList.toggle("active", i === activeIndex);
       item.style.zIndex = String(100 - posIndex);
       item.style.opacity = i === activeIndex ? "1" : "0.55";
@@ -387,5 +387,6 @@ if (wheel) {
 }
   }
 })();
+
 
 
