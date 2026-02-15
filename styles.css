@@ -1155,3 +1155,12 @@ textarea{
   *{ scroll-behavior:auto !important; transition:none !important; }
   #fx{ display:none !important; }
 }
+
+/* FORCE ORBIT WHEEL — kill any old stacked rules */
+.wheelItem{
+  inset: auto !important;
+  left: 50% !important;
+  top: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+}
