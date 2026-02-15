@@ -386,7 +386,6 @@ if (wheel) {
 }
 }
   }
-})();
 
 window.addEventListener("DOMContentLoaded", () => {
   const wheel = document.getElementById("packageWheel");
@@ -447,6 +446,9 @@ window.addEventListener("DOMContentLoaded", () => {
   // debug: remove later
   console.log("[wheel] initialized", items.length);
 });
+
+})();
+
 
 
 
